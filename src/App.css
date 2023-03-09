@@ -1,0 +1,20 @@
+.page-center{
+  min-height:80vh;
+  align-items: center;
+  display:flex
+}
+
+.resolve-panel{
+  max-width:600px;
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+}
+
+
+.nav-link strong{
+  color: #35BADB;
+}
+.main-nav {
+  border-bottom: 1px solid darkgrey;
+}

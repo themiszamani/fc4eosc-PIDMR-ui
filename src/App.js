@@ -25,6 +25,12 @@ function isValidArxiv(pid) {
   return result
 }
 
+// check if a pid is valid software heritage id 
+function isValidSWH(pid) {
+  const regex = /^swh:[1-9]:(cnt|dir|rel|rev|snp):[0-9a-f]+(;(origin|visit|anchor|path|lines)=\S+)*$/
+  return regex.test(pid)
+}
+
 // Component to render the metaresolver page
 function Main() {
   const [pid, setPid] = useState("")
@@ -45,7 +51,15 @@ function Main() {
         setValid(false)
         setTooltip("Please enter a valid ARK pid (e.g. ark:/13030/tf5p30086k)")
       }
-    } else if (pid.toLowerCase().startsWith("arxiv:")) {
+    } else if (pid.startsWith("swh:")) {
+      if (isValidSWH(pid)) {
+        setValid(true)
+        setTooltip("this is valid Software Heritage (SWH) pid")
+      } else {
+        setValid(false)
+        setTooltip("Please enter a valid (SWH) pid (e.g. swh:1:cnt:94a9ed024d3859793618152ea559a168bbcbb5e2")
+      }
+    }else if (pid.toLowerCase().startsWith("arxiv:")) {
       if (isValidArxiv(pid)) {
         setValid(true)
         setTooltip("this is a valid arxiv pid")
@@ -53,9 +67,10 @@ function Main() {
         setValid(false)
         setTooltip("Please enter a valid arxiv pid (e.g. arxiv:1512.00135)")
       }
+      
     } else {
       setValid(false)
-      setTooltip("Please enter a valid pid (ark, arxiv)")
+      setTooltip("Please enter a valid pid (ark, arxiv, swh)")
     }
 
 
@@ -118,6 +133,7 @@ function SupportedPIDS() {
       <ul>
         <li>ARK</li>
         <li>arxiv</li>
+        <li>SWH (Software Heritage)</li>
       </ul>
     </div>
   )

@@ -5,16 +5,48 @@ import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
+// check if a pid is valid ark
+function isValidARK(pid){
+  const regex = /^ark:(?:\/\d{5,9})+\/[a-zA-Z\d]+(-[a-zA-Z\d]+)*$/
+  return regex.test(pid);
+}
 
 // Component to render the metaresolver page
 function Main() {
-  const [pid, setPid] = useState("ark:/13030/tf5p30086k")
+  const [pid, setPid] = useState("")
   const [redirect, setRedirect] = useState(true)
+  const [valid, setValid] = useState(false)
+  const [tooltip, setTooltip] = useState("Please enter a valid ark id")
+
+  function handleChange(event) {
+    let pid = event.target.value.trim()
+    setPid(pid)
+    console.log(pid)
+    // check if ark
+    if (pid.startsWith("ark:")) {
+      if (isValidARK(pid)) {
+        setValid(true)
+        setTooltip("this is a valid ARK pid")
+      } else {
+        setValid(false)
+        setTooltip("Please enter a valid ARK pid (e.g. ark:/13030/tf5p30086k)")
+      }
+    }
+    console.log(isValidARK(pid))
+
+  }
 
   let jump_url = "https://hdl.handle.net/21.T11999/METARESOLVER@" + pid
   if (!redirect) {
     jump_url = jump_url + "?noredirect"
   }
+
+  
+  let tipcolor = "grey"
+  if (valid) {
+    tipcolor = "green"
+  }
+ 
 
   return (
     <div className="page-center">
@@ -26,13 +58,15 @@ function Main() {
         
         {/* Pid input box */}
         <input type="text" className="form-control" style={{ 'max-width': '600px' }} id="input-pid" 
-        value={pid} onChange={(evt) => { setPid(evt.target.value) }} />
-      
+        value={pid} onChange={(event) => {handleChange(event)}} />
+         <em style={{color: tipcolor}}>{tooltip}</em>
+
         {/* Redirect check button */}
         <div class="mt-1 mb-2 text-start">
           <input className="form-check-input" type="checkbox" value="" id="checkRedirect"
             defaultChecked={!redirect} onChange={() => { setRedirect(!redirect) }}
           />
+         
           {" "}
           <label className="form-check-label mr-2" for="checkRedirect">
             No redirect to url 
@@ -40,7 +74,7 @@ function Main() {
         </div>
 
         {/* Resolve button */}
-        <a className="btn btn-lg btn-primary" href={jump_url} target="_blank" rel="noreferrer">Resolve ➜</a>
+        <a className={"btn btn-lg btn-primary " + (valid ? '' : 'disabled')} href={jump_url} target="_blank" rel="noreferrer">Resolve ➜</a>
       
       </div>
     </div>

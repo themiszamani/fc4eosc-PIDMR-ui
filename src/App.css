@@ -18,3 +18,21 @@
 .main-nav {
   border-bottom: 1px solid darkgrey;
 }
+
+.info {
+  min-height:4rem;
+  margin-top:10px;
+  border:1px solid rgb(230, 226, 179);
+  background:#ffffed;
+  padding:5px;
+  border-radius: .375rem;
+}
+
+.fillin{
+  border-bottom:dashed;
+  cursor:pointer;
+}
+
+.fillin:hover{
+  background-color: blanchedalmond;
+}

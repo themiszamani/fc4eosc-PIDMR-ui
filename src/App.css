@@ -36,3 +36,12 @@
 .fillin:hover{
   background-color: blanchedalmond;
 }
+
+.resolve-btn{
+  margin-left:0.6rem;
+}
+
+.btn-ico{
+ margin-top:-0.2rem;
+ margin-right:0.4rem;
+}

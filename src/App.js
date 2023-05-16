@@ -9,83 +9,157 @@ import logoARK from './logoARK.png'
 import logoARXIV from './logoARXIV.png'
 import logoEPIC from './logoEPIC.png'
 import logoSWH from './logoSWH.png'
+import logoNBNDE from './logoNBNDE.png'
+import logoNBNFI from './logoNBNFI.png'
+import { FaBarcode } from 'react-icons/fa';
+import { FaHome } from 'react-icons/fa';
+import { FaCube } from 'react-icons/fa';
 
 // Backend references used in resolving stuff
 const PROXY = "https://hdl.handle.net/";
-const TEMPLATE_DEFAULT = "21.T11999/METARESOLVER@";
-const TEMPLATE_SWH = "21.T11973/MR@";
+//const TEMPLATE_DEFAULT = "21.T11999/METARESOLVER@";
+const TEMPLATE_DEFAULT = "21.T11973/MR@";
 
-
-
-
-// Generate jump urls per fixed case
+// direct swh urls to overcome template issues
+const SWH_URL = "https://archive.softwareheritage.org/";
+const SWH_API_URL = "https://archive.softwareheritage.org/api/1/resolve/";
 
 // this is the default jump using the designated proxy and default template
 const jumpDefault = function (pid) {
-  return PROXY + TEMPLATE_DEFAULT + pid;
+  return {
+    landing: PROXY + TEMPLATE_DEFAULT + pid + "?landingpage",
+    metadata: PROXY + TEMPLATE_DEFAULT + pid + "?metadata",
+    resource: PROXY + TEMPLATE_DEFAULT + pid + "?resource",
+  }
 }
 
-// this is a slightly modified jump in case of swh pids using another template
+
+
+// this is a slightly modified jump in case of swh pids using direct swh api
 const jumpShw = function (pid) {
-  return PROXY + TEMPLATE_SWH + pid;
+   return {
+    landing: '#',
+    metadata: SWH_API_URL + pid + "?format=json",
+    resource: SWH_URL + pid,
+  }
+  
 }
 
 // this is a slightly modifed jump in case of epic handles using just the proxy and the pid
 const jumpEpic = function (pid) {
-  return PROXY +  pid;
+  return {
+    landing:  PROXY +  pid,
+    metadata:  PROXY +  pid,
+    resource:  PROXY +  pid,
+  }
 }
 
 // this is a slightly modified jump in case of dois using just the proxy and the pid
 // but removing the doi: prefix from the pid
 const jumpDoi = function (pid) {
-  return PROXY + pid.slice(4);
+  let npid = pid.slice(4);
+  return {
+    landing:  PROXY +  npid,
+    metadata:  PROXY +  npid,
+    resource:  PROXY +  npid,
+  }
 }
 
 // Dictionary of identifiers - each one with validation regex and an example
 const IDENTIFIERS = {
+  'urn':{
+    example: null,
+    regex: null,
+    logo:null,
+    landing:false,
+    metadata:false,
+    resource:false,
+
+  },
+  'urn:nbn:de':{
+    regex: /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[D,d][E,e][a-z0-9()+,\-.:=@;$_!*'%/?#]+$/,
+    example:'urn:nbn:de:hbz:6-85659524771',
+    regexPart: /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[D,d][E,e]/,
+    logo:logoNBNDE,
+    jump:jumpDefault,
+    landing:true,
+    metadata:true,
+    resource:true,
+  },
+  'urn:nbn:fi':{
+    regex: /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[F,f][I,i][a-z0-9()+,\-.:=@;$_!*'%/?#]+$/,
+    example:'urn:nbn:fi-fe2021080942632',
+    regexPart: /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[F,f][I,i]/,
+    logo:logoNBNFI,
+    jump:jumpDefault,
+    landing:true,
+    metadata:false,
+    resource:false,
+  },
   'ark': {
     regex: /^(a|A)(r|R)(k|K):(?:\/\d{5,9})+\/[a-zA-Z\d]+(-[a-zA-Z\d]+)*$/,
     example: 'ark:/13030/tf5p30086k',
     logo: logoARK,
-    jump: jumpDefault
+    jump: jumpDefault,
+    landing:true,
+    metadata:true,
+    resource:false,
   },
   'arxiv': {
     regex: /^(a|A)(r|R)(X|x)(i|I)(v|V):\d{2}((9|0)[1-9]|1[0-2])\.\d{4,5}(v\d+)?$/,
     example: 'arxiv:1512.00135',
     logo: logoARXIV,
-    jump: jumpDefault
+    jump: jumpDefault,
+    landing:true,
+    metadata:true,
+    resource:true,
   },
   'arxiv.old': {
     regex: /^(a|A)(r|R)(X|x)(i|I)(v|V):(astro-ph|cond-mat|gr-qc|hep-ex|hep-lat|hep-ph|hep-th|math-ph|nlin|nucl-ex|nucl-th|physics|quant-ph|math|CoRR|q-bio|q-fin|stat|eess|econ)(\.[A-Z][A-Z])?\/\d{2}(0[1-9]|1[0-2])\d+(v\d+)?$/,
     regexPart: /^(a|A)(r|R)(X|x)(i|I)(v|V):[a-z]/,
     example: 'arXiv:math.RT/0309136',
     logo: logoARXIV,
-    jump: jumpDefault
+    jump: jumpDefault,
+    landing:true,
+    metadata:true,
+    resource:true,
   },
   'swh': {
     regex: /^(s|S)(w|W)(h|H):[1-9]:(cnt|dir|rel|rev|snp):[0-9a-f]+(;(origin|visit|anchor|path|lines)=\S+)*$/,
     example: 'swh:1:cnt:94a9ed024d3859793618152ea559a168bbcbb5e2',
     logo: logoSWH,
-    jump: jumpShw
+    jump: jumpShw,
+    landing:false,
+    metadata:true,
+    resource:true,
   },
   'doi': {
     regex: /^(d|D)(o|O)(i|I):10\.\d+\/.+$/,
     example: 'doi:10.3352/jeehp.2013.10.3',
     logo: logoDOI,
-    jump: jumpDoi
+    jump: jumpDoi,
+    landing:true,
+    metadata:false,
+    resource:false,
   },
   'epic': {
     regex: /^21\.T?\d+\/.+$/,
     example: '21.T11148/f5e68cc7718a6af2a96c',
     logo: logoEPIC,
-    jump: jumpEpic
+    jump: jumpEpic,
+    landing:true,
+    metadata:true,
+    resource:false,
   },
   'epic.old': {
     regex: /^\d{5,5}\/.+$/,
     regexPart: /^\d/,
     example: '11500/ATHENA-0000-0000-2401-6',
     logo: logoEPIC,
-    jump: jumpEpic
+    jump: jumpEpic,
+    landing:true,
+    metadata:true,
+    resource:false,
   }
 };
 
@@ -94,7 +168,14 @@ function initResult() {
   return {
     valid: false,
     pidType: "unknown",
-    jumpUrl: '#'
+    jumpURLs: {
+      landing: '#',
+      metadata: '#',
+      resource: '#'
+    },
+    landing: false,
+    metadata: false,
+    resource: false
   };
 }
 
@@ -112,22 +193,40 @@ function validate(pid) {
   if (prefix) {
     // lowercase the prefix to easily match validators dictionary keys
     prefix = prefix.toLowerCase();
+    // check if prefix is an urn
+
     let provider = IDENTIFIERS[prefix];
     // if provider indeed in identifiers
     if (provider) {
+      // check first if its urn
+     
       // check if its valid
       result.pidType = prefix;
-      result.valid = provider.regex.test(pid);
-      // if arxiv and still not valid check if its old format
-      if (!result.valid && prefix === 'arxiv') {
-        // if first item after prefix is a letter try to check old arxiv
-        provider = IDENTIFIERS['arxiv.old']
-        // check if first part looks like arxiv.old using small regex
-        if (provider.regexPart.test(pid)) {
-          result.pidType = 'arxiv.old';
-          result.valid = provider.regex.test(pid);
+      if (result.pidType === "urn") {
+        for (let urnType of ["urn:nbn:de", "urn:nbn:fi"]) {
+          // if first item after prefix is a letter try to check old arxiv
+          provider = IDENTIFIERS[urnType]
+          // check if first part looks like arxiv.old using small regex
+          if (provider.regexPart.test(pid)) {
+            result.pidType = urnType;
+            result.valid = provider.regex.test(pid);
+            break;
+          }
+        } 
+      } else {
+        result.valid = provider.regex.test(pid);
+        // if arxiv and still not valid check if its old format
+        if (!result.valid && prefix === 'arxiv') {
+          // if first item after prefix is a letter try to check old arxiv
+          provider = IDENTIFIERS['arxiv.old']
+          // check if first part looks like arxiv.old using small regex
+          if (provider.regexPart.test(pid)) {
+            result.pidType = 'arxiv.old';
+            result.valid = provider.regex.test(pid);
+          }
         }
       }
+      
     }
 
     // handle pids with no prefix - epic handles
@@ -144,7 +243,17 @@ function validate(pid) {
 
   // if result is valid try to generate the jump url
   if (result.valid) {
-    result.jumpUrl = IDENTIFIERS[result.pidType].jump(pid);
+    result.jumpURLs = IDENTIFIERS[result.pidType].jump(pid);
+    result.landing = IDENTIFIERS[result.pidType].landing;
+    result.metadata = IDENTIFIERS[result.pidType].metadata;
+    result.resource = IDENTIFIERS[result.pidType].resource;
+  } else {
+    result.jumpURLs = {
+      landing: "#", metadata: "#", resource: "#"
+    }
+    result.landing = false;
+    result.metadata = false;
+    result.resource = false;
   }
 
   return result;
@@ -154,7 +263,6 @@ function validate(pid) {
 // Component to render the metaresolver page
 function Main() {
   const [pid, setPid] = useState("");
-  const [redirect, setRedirect] = useState(true);
   const [result, setResult] = useState(initResult());
 
   function handleChange(event) {
@@ -179,7 +287,26 @@ function Main() {
       <div style={{ color: 'grey' }}>
         <strong>Please enter a valid Pid</strong>
         <br/>
-        <em>Supported formats: ark, arXiv, swh, doi, epic handle</em>
+        <em>Supported formats: ark, arXiv, swh, doi, epic handle, urn:nbn</em>
+      </div>
+    )
+  } else if (result.pidType === 'urn') {
+    tooltip = (
+      <div style={{ color: 'grey' }}>
+        <strong>Please enter a valid urn:nbn:de or urn:nbn:fe pid</strong>
+        <br/>
+        {'examples: '}
+        <span className="fillin"
+                data-example = {IDENTIFIERS["urn:nbn:de"].example}
+                onClick={(event) => {handleGrabEg(event)}}>
+            {IDENTIFIERS["urn:nbn:de"].example}
+          </span>
+          <br/>
+          <span className="fillin"
+                data-example = {IDENTIFIERS["urn:nbn:fi"].example}
+                onClick={(event) => {handleGrabEg(event)}}>
+            {IDENTIFIERS["urn:nbn:fi"].example}
+          </span>
       </div>
     )
   } else {
@@ -187,7 +314,9 @@ function Main() {
       <div>
         <strong>Format: </strong>
         <span>{result.pidType + " "}</span>
-        <img height="20px" src={IDENTIFIERS[result.pidType].logo} alt={result.pidType}/>
+        { IDENTIFIERS[result.pidType].logo && 
+         <img height="20px" src={IDENTIFIERS[result.pidType].logo} alt={result.pidType}/>
+        }
         <span className="mx-2">-</span>
         <strong>Valid:</strong>
         <span>{result.valid ? "✅" : "❌"}</span>
@@ -221,22 +350,13 @@ function Main() {
         <div className="info">
         {tooltip}
         </div>
-        
-
-        {/* Redirect check button */}
-        <div className="mt-1 mb-2 text-start">
-          <input className="form-check-input" type="checkbox" value="" id="checkRedirect"
-            defaultChecked={!redirect} onChange={() => { setRedirect(!redirect) }}
-          />
-          {" "}
-          <label className="form-check-label mr-2" htmlFor="checkRedirect">
-            No redirect to url
-          </label>
-        </div>
+        <br/>
 
         {/* Resolve button */}
-        <a className={"btn btn-lg btn-primary " + (result.valid ? '' : 'disabled')} href={redirect ? result.jumpUrl : result.jumpUrl + "?noredirect"} target="_blank" rel="noreferrer">Resolve ➜</a>
-
+        <strong className={(result.valid ? '' : 'text-muted')} style={{'fontSize':'1.2rem'}}>resolve: </strong>
+        {" "}<a className={"resolve-btn btn btn-lg btn-primary mr-2 " + (result.landing ? '' : 'disabled')} href={result.jumpURLs.landing} target="_blank" rel="noreferrer"><FaHome className="btn-ico"/> Landing Page</a>
+        {" "}<a className={"resolve-btn btn btn-lg btn-primary " + (result.metadata ? '' : 'disabled')} href={result.jumpURLs.metadata} target="_blank" rel="noreferrer"><FaBarcode className="btn-ico"/> Metadata</a>
+        {" "}<a className={"resolve-btn btn btn-lg btn-primary " + (result.resource ? '' : 'disabled')} href={result.jumpURLs.resource} target="_blank" rel="noreferrer"><FaCube className="btn-ico"/> Resource</a>
       </div>
     </div>
   )
@@ -258,6 +378,8 @@ function SupportedPIDS() {
         </li>
         <li>arxiv <small><a className="text-decoration-none" href="https://info.arxiv.org/help/arxiv_identifier.html">ⓘ</a></small></li>
         <li>DOI <small><a className="text-decoration-none" href="https://www.doi.org/the-identifier/what-is-a-doi/">ⓘ</a></small></li>
+        <li>URN:NBN:DE <small><a className="text-decoration-none" href="https://www.ietf.org/rfc/rfc3188.txt">ⓘ</a></small></li>
+        <li>URN:NBN:FI <small><a className="text-decoration-none" href="https://www.ietf.org/rfc/rfc3188.txt">ⓘ</a></small></li>
         <li>ePIC handles <small><a className="text-decoration-none" href="http://www.pidconsortium.net/?page_id=1060">ⓘ</a></small></li>
         <li>SWH (Software Heritage) <small><a className="text-decoration-none" href="https://docs.softwareheritage.org/devel/swh-model/persistent-identifiers.html">ⓘ</a></small></li>
       </ul>

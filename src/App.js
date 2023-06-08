@@ -20,54 +20,17 @@ import { FaCube } from 'react-icons/fa';
 const PROVIDERS_URL = "https://apimr.devel.argo.grnet.gr/v1/providers";
 
 // Backend references used in resolving stuff
-const PROXY = "https://hdl.handle.net/";
-//const TEMPLATE_DEFAULT = "21.T11999/METARESOLVER@";
-const TEMPLATE_DEFAULT = "21.T11973/MR@";
-
-// direct swh urls to overcome template issues
-const SWH_URL = "https://archive.softwareheritage.org/";
-const SWH_API_URL = "https://archive.softwareheritage.org/api/1/resolve/";
+const RESOLVE_URL = "https://apimr.devel.argo.grnet.gr/v1/metaresolvers/resolve";
 
 // this is the default jump using the designated proxy and default template
 const jumpDefault = function (pid) {
   return {
-    landing: PROXY + TEMPLATE_DEFAULT + pid + "?landingpage",
-    metadata: PROXY + TEMPLATE_DEFAULT + pid + "?metadata",
-    resource: PROXY + TEMPLATE_DEFAULT + pid + "?resource",
+    landing: RESOLVE_URL + "?landingpage&redirect=true&pid=" + pid,
+    metadata: RESOLVE_URL + "?metadata&redirect=true&pid=" + pid ,
+    resource: RESOLVE_URL  + "?resource&redirect=true&pid=" + pid,
   }
 }
 
-
-
-// this is a slightly modified jump in case of swh pids using direct swh api
-const jumpShw = function (pid) {
-   return {
-    landing: '#',
-    metadata: SWH_API_URL + pid + "?format=json",
-    resource: SWH_URL + pid,
-  }
-  
-}
-
-// this is a slightly modifed jump in case of epic handles using just the proxy and the pid
-const jumpEpic = function (pid) {
-  return {
-    landing:  PROXY +  pid,
-    metadata:  PROXY +  pid,
-    resource:  PROXY +  pid,
-  }
-}
-
-// this is a slightly modified jump in case of dois using just the proxy and the pid
-// but removing the doi: prefix from the pid
-const jumpDoi = function (pid) {
-  let npid = pid.slice(4);
-  return {
-    landing:  PROXY +  npid,
-    metadata:  PROXY +  npid,
-    resource:  PROXY +  npid,
-  }
-}
 
 // Dictionary of identifiers - each one with validation regex and an example
 const IDENTIFIERS = {
@@ -85,7 +48,6 @@ const IDENTIFIERS = {
     example:'urn:nbn:de:hbz:6-85659524771',
     regexPart: /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[D,d][E,e]/,
     logo:logoNBNDE,
-    jump:jumpDefault,
     landing:true,
     metadata:true,
     resource:true,
@@ -95,7 +57,6 @@ const IDENTIFIERS = {
     example:'urn:nbn:fi-fe2021080942632',
     regexPart: /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[F,f][I,i]/,
     logo:logoNBNFI,
-    jump:jumpDefault,
     landing:true,
     metadata:false,
     resource:false,
@@ -104,7 +65,6 @@ const IDENTIFIERS = {
     regex: /^(a|A)(r|R)(k|K):(?:\/\d{5,9})+\/[a-zA-Z\d]+(-[a-zA-Z\d]+)*$/,
     example: 'ark:/13030/tf5p30086k',
     logo: logoARK,
-    jump: jumpDefault,
     landing:true,
     metadata:true,
     resource:false,
@@ -113,7 +73,6 @@ const IDENTIFIERS = {
     regex: /^(a|A)(r|R)(X|x)(i|I)(v|V):\d{2}((9|0)[1-9]|1[0-2])\.\d{4,5}(v\d+)?$/,
     example: 'arxiv:1512.00135',
     logo: logoARXIV,
-    jump: jumpDefault,
     landing:true,
     metadata:true,
     resource:true,
@@ -123,7 +82,6 @@ const IDENTIFIERS = {
     regexPart: /^(a|A)(r|R)(X|x)(i|I)(v|V):[a-z]/,
     example: 'arXiv:math.RT/0309136',
     logo: logoARXIV,
-    jump: jumpDefault,
     landing:true,
     metadata:true,
     resource:true,
@@ -132,7 +90,6 @@ const IDENTIFIERS = {
     regex: /^(s|S)(w|W)(h|H):[1-9]:(cnt|dir|rel|rev|snp):[0-9a-f]+(;(origin|visit|anchor|path|lines)=\S+)*$/,
     example: 'swh:1:cnt:94a9ed024d3859793618152ea559a168bbcbb5e2',
     logo: logoSWH,
-    jump: jumpShw,
     landing:false,
     metadata:true,
     resource:true,
@@ -141,7 +98,6 @@ const IDENTIFIERS = {
     regex: /^(d|D)(o|O)(i|I):10\.\d+\/.+$/,
     example: 'doi:10.3352/jeehp.2013.10.3',
     logo: logoDOI,
-    jump: jumpDoi,
     landing:true,
     metadata:false,
     resource:false,
@@ -150,7 +106,6 @@ const IDENTIFIERS = {
     regex: /^21\.T?\d+\/.+$/,
     example: '21.T11148/f5e68cc7718a6af2a96c',
     logo: logoEPIC,
-    jump: jumpEpic,
     landing:true,
     metadata:true,
     resource:false,
@@ -160,7 +115,6 @@ const IDENTIFIERS = {
     regexPart: /^\d/,
     example: '11500/ATHENA-0000-0000-2401-6',
     logo: logoEPIC,
-    jump: jumpEpic,
     landing:true,
     metadata:true,
     resource:false,
@@ -247,7 +201,7 @@ function validate(pid) {
 
   // if result is valid try to generate the jump url
   if (result.valid) {
-    result.jumpURLs = IDENTIFIERS[result.pidType].jump(pid);
+    result.jumpURLs = jumpDefault(pid);
     result.landing = IDENTIFIERS[result.pidType].landing;
     result.metadata = IDENTIFIERS[result.pidType].metadata;
     result.resource = IDENTIFIERS[result.pidType].resource;

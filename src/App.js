@@ -25,9 +25,9 @@ const RESOLVE_URL = "https://apimr.devel.argo.grnet.gr/v1/metaresolvers/resolve"
 // this is the default jump using the designated proxy and default template
 const jumpDefault = function (pid) {
   return {
-    landing: RESOLVE_URL + "?landingpage&redirect=true&pid=" + pid,
-    metadata: RESOLVE_URL + "?metadata&redirect=true&pid=" + pid ,
-    resource: RESOLVE_URL  + "?resource&redirect=true&pid=" + pid,
+    landing: RESOLVE_URL + "?pidMode=landingpage&redirect=true&pid=" + pid,
+    metadata: RESOLVE_URL + "?pidMode=metadata&redirect=true&pid=" + pid ,
+    resource: RESOLVE_URL  + "?pidMode=resource&redirect=true&pid=" + pid,
   }
 }
 

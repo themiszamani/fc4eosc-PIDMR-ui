@@ -11,7 +11,6 @@ import logoEPIC from './logoEPIC.png'
 import logoSWH from './logoSWH.png'
 import logoNBNDE from './logoNBNDE.png'
 import logoNBNFI from './logoNBNFI.png'
-import logoZenodo from './logoZenodo.png'
 import { FaBarcode } from 'react-icons/fa';
 import { FaHome } from 'react-icons/fa';
 import { FaCube } from 'react-icons/fa';
@@ -124,7 +123,7 @@ const IDENTIFIERS = {
     regex: /^10.5281\/zenodo.([0-9]{7})+$/,
     regexPart: /^\d/,
     example: '10.5281/zenodo.8056361',
-    logo: logoZenodo,
+    logo: logoNBNFI,
     landing:true,
     metadata:true,
     resource:true,

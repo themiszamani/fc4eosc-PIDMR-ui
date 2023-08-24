@@ -118,6 +118,15 @@ const IDENTIFIERS = {
     landing:true,
     metadata:true,
     resource:false,
+  },
+  'zenodo':{
+    regex: /^10.5281\/zenodo.([0-9]{7})+$/,
+    regexPart: /^\d/,
+    example: '10.5281/zenodo.8056361',
+    logo: logoNBNFI,
+    landing:true,
+    metadata:true,
+    resource:true,
   }
 };
 
@@ -189,8 +198,12 @@ function validate(pid) {
 
     // handle pids with no prefix - epic handles
   } else {
-    // check if its a new epic handle
-    if (pid.length > 0 && pid.startsWith("21.".slice(0,pid.length))) {
+    //check if it is zenodo
+    if (pid.length > 0 && pid.startsWith("10.5281".slice(0,pid.length))) {
+      result.pidType = "zenodo";
+      result.valid = IDENTIFIERS["zenodo"].regex.test(pid);
+      // check if its a new epic handle
+    } else if (pid.length > 0 && pid.startsWith("21.".slice(0,pid.length))) {
       result.pidType = "epic";
       result.valid = IDENTIFIERS["epic"].regex.test(pid);
     } else if (IDENTIFIERS["epic.old"].regexPart.test(pid)) {

@@ -91,7 +91,7 @@ const IDENTIFIERS = {
     regex: /^(s|S)(w|W)(h|H):[1-9]:(cnt|dir|rel|rev|snp):[0-9a-f]+(;(origin|visit|anchor|path|lines)=\S+)*$/,
     example: 'swh:1:cnt:94a9ed024d3859793618152ea559a168bbcbb5e2',
     logo: logoSWH,
-    landing:false,
+    landing:true,
     metadata:true,
     resource:true,
   },

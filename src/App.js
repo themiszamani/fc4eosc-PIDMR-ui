@@ -395,9 +395,9 @@ function SupportedPIDS() {
     for (let item of data.content) {
 
       // prep the supported modes element for the provider
-      let actions = []
-      for (let actionItem of item.actions) {
-        actions.push(<span className="badge badge-small bg-secondary mx-1" key={actionItem.mode}>{actionItem.name}</span>)
+      let resolution_modes = []
+      for (let actionItem of item.resolution_modes) {
+        resolution_modes.push(<span className="badge badge-small bg-secondary mx-1" key={actionItem.mode}>{actionItem.name}</span>)
       }
       // push to the provider list the element view of a provider
       // the provider is rendered as a card with 
@@ -415,9 +415,9 @@ function SupportedPIDS() {
               </div>
             </div>
             <div className="card-body">{item.description}</div>
-            {actions.length > 0 &&
+            {resolution_modes.length > 0 &&
             <div className="card-footer">
-              <div className="d-flex justify-content-end"><small className="text-secondary mx-2">modes:</small>{actions}</div>
+              <div className="d-flex justify-content-end"><small className="text-secondary mx-2">modes:</small>{resolution_modes}</div>
             </div>
             }
           </div>

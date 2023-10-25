@@ -8,7 +8,7 @@ pipeline {
         PROJECT_DIR='pidmr-ui'
     }
     stages {
-        stage ('Build and Deploy pidmr-ui') {
+        stage ('Check & Build pidmr-ui') {
             agent {
                 docker {
                     image 'node:lts-buster'
@@ -19,7 +19,7 @@ pipeline {
                     sh '''
                         cd $WORKSPACE/$PROJECT_DIR
                         npm install
-                        CI=false npm run build
+                        npm run prettier && npm run stylelint && npm run lint && npm run build
                     '''
             }
         }

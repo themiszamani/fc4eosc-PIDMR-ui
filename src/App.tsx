@@ -53,7 +53,7 @@ const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const PROVIDERS_URL = `${PIDMR_API}/v1/providers`;
 
 // Backend references used in resolving stuff
-const RESOLVE_URL = `${PIDMR_API}/metaresolvers/resolve`;
+const RESOLVE_URL = `${PIDMR_API}/v1/metaresolvers/resolve`;
 
 // this is the default jump using the designated proxy and default template
 const jumpDefault = function (pid: string) {

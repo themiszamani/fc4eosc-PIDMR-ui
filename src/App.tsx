@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, MouseEvent } from "react";
+import { useState, useEffect, ChangeEvent, MouseEvent, useMemo } from "react";
 import {
   Routes,
   Route,
@@ -10,259 +10,67 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 
 import "./App.css";
 import logo from "./assets/logo.svg";
-import logoDOI from "./assets/logoDOI.png";
-import logoARK from "./assets/logoARK.png";
-import logoARXIV from "./assets/logoARXIV.png";
-import logoEPIC from "./assets/logoEPIC.png";
-import logoSWH from "./assets/logoSWH.png";
-import logoNBNDE from "./assets/logoNBNDE.png";
-import logoNBNFI from "./assets/logoNBNFI.png";
-import logoZenodo from "./assets/logoZenodo.svg";
 import { FaBarcode } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaCube } from "react-icons/fa";
 
-type JumpURLS = {
-  landing: string;
-  metadata: string;
-  resource: string;
-};
-
-type EntryPID = {
-  valid: boolean;
-  pidType: string;
-  jumpURLs: JumpURLS;
-  landing: boolean;
-  metadata: boolean;
-  resource: boolean;
-};
-
-type Identifier = {
-  regex: RegExp | null;
-  regexPart?: RegExp;
-  example: string | null;
-  logo: string | null;
-  landing: boolean;
-  metadata: boolean;
-  resource: boolean;
-};
-
-type Identifiers = { [key: string]: Identifier };
+// API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 // TODO: pagination support in case of a large collection of providers - keep it simple for the time being
-const PROVIDERS_URL = `${PIDMR_API}/v1/providers`;
-
+const PROVIDERS_API_ROUTE = `${PIDMR_API}/v1/providers`;
 // Backend references used in resolving stuff
-const RESOLVE_URL = `${PIDMR_API}/v1/metaresolvers/resolve`;
+const RESOLVE_API_ROUTE = `${PIDMR_API}/v1/metaresolvers/resolve`;
+// Backend references used in resolving stuff
+const IDENTIFY_API_ROUTE = `${PIDMR_API}/v1/providers/identify`;
+// default debounce input timeout at 300 ms
+const DEBOUNCE_TIMEOUT = 300;
 
-// this is the default jump using the designated proxy and default template
-const jumpDefault = function (pid: string) {
-  return {
-    landing: RESOLVE_URL + "?pidMode=landingpage&redirect=true&pid=" + pid,
-    metadata: RESOLVE_URL + "?pidMode=metadata&redirect=true&pid=" + pid,
-    resource: RESOLVE_URL + "?pidMode=resource&redirect=true&pid=" + pid,
-  };
-};
+// backend call to identify provider types
 
-// Dictionary of identifiers - each one with validation regex and an example
-const IDENTIFIERS: Identifiers = {
-  urn: {
-    example: null,
-    regex: null,
-    logo: null,
-    landing: false,
-    metadata: false,
-    resource: false,
-  },
-  "urn:nbn:de": {
-    regex:
-      /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[D,d][E,e][a-z0-9()+,\-.:=@;$_!*'%/?#]+$/,
-    example: "urn:nbn:de:hbz:6-85659524771",
-    regexPart: /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[D,d][E,e]/,
-    logo: logoNBNDE,
-    landing: true,
-    metadata: true,
-    resource: true,
-  },
-  "urn:nbn:fi": {
-    regex:
-      /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[F,f][I,i][a-z0-9()+,\-.:=@;$_!*'%/?#]+$/,
-    example: "urn:nbn:fi-fe2021080942632",
-    regexPart: /^[U,u][R,r][N,n]:[N,n][B,b][N,n]:[F,f][I,i]/,
-    logo: logoNBNFI,
-    landing: true,
-    metadata: false,
-    resource: false,
-  },
-  ark: {
-    regex: /^(a|A)(r|R)(k|K):(?:\/\d{5,9})+\/[a-zA-Z\d]+(-[a-zA-Z\d]+)*$/,
-    example: "ark:/13030/tf5p30086k",
-    logo: logoARK,
-    landing: true,
-    metadata: true,
-    resource: false,
-  },
-  arxiv: {
-    regex:
-      /^(a|A)(r|R)(X|x)(i|I)(v|V):\d{2}((9|0)[1-9]|1[0-2])\.\d{4,5}(v\d+)?$/,
-    example: "arxiv:1512.00135",
-    logo: logoARXIV,
-    landing: true,
-    metadata: true,
-    resource: true,
-  },
-  "arxiv.old": {
-    regex:
-      /^(a|A)(r|R)(X|x)(i|I)(v|V):(astro-ph|cond-mat|gr-qc|hep-ex|hep-lat|hep-ph|hep-th|math-ph|nlin|nucl-ex|nucl-th|physics|quant-ph|math|CoRR|q-bio|q-fin|stat|eess|econ)(\.[A-Z][A-Z])?\/\d{2}(0[1-9]|1[0-2])\d+(v\d+)?$/,
-    regexPart: /^(a|A)(r|R)(X|x)(i|I)(v|V):[a-z]/,
-    example: "arXiv:math.RT/0309136",
-    logo: logoARXIV,
-    landing: true,
-    metadata: true,
-    resource: true,
-  },
-  swh: {
-    regex:
-      /^(s|S)(w|W)(h|H):[1-9]:(cnt|dir|rel|rev|snp):[0-9a-f]+(;(origin|visit|anchor|path|lines)=\S+)*$/,
-    example: "swh:1:cnt:94a9ed024d3859793618152ea559a168bbcbb5e2",
-    logo: logoSWH,
-    landing: true,
-    metadata: true,
-    resource: true,
-  },
-  doi: {
-    regex: /^(d|D)(o|O)(i|I):10\.\d+\/.+$/,
-    example: "doi:10.3352/jeehp.2013.10.3",
-    logo: logoDOI,
-    landing: true,
-    metadata: false,
-    resource: false,
-  },
-  epic: {
-    regex: /^21\.T?\d+\/.+$/,
-    example: "21.T11148/f5e68cc7718a6af2a96c",
-    logo: logoEPIC,
-    landing: true,
-    metadata: true,
-    resource: false,
-  },
-  "epic.old": {
-    regex: /^\d{5,5}\/.+$/,
-    regexPart: /^\d/,
-    example: "11500/ATHENA-0000-0000-2401-6",
-    logo: logoEPIC,
-    landing: true,
-    metadata: true,
-    resource: false,
-  },
-  zenodo: {
-    regex: /^10.5281\/zenodo.([0-9]{7})+$/,
-    regexPart: /^\d/,
-    example: "10.5281/zenodo.8056361",
-    logo: logoZenodo,
-    landing: true,
-    metadata: true,
-    resource: true,
-  },
-};
-
-// Provide an initial state object for the ui
-function initResult() {
-  return {
-    valid: false,
-    pidType: "unknown",
-    jumpURLs: {
-      landing: "#",
-      metadata: "#",
-      resource: "#",
-    },
-    landing: false,
-    metadata: false,
-    resource: false,
-  };
+// resolution mode valus
+enum ResolutionModes {
+  LandingPage = "landingpage",
+  Metadata = "metadata",
+  Resource = "resource",
 }
 
-// this where validation takes place - returns a validation result
-function validate(pid: string) {
-  // prep the validation result
-  const result: EntryPID = initResult();
-  // grab the prefix
-  let prefix = pid.substring(0, pid.indexOf(":"));
+// identify status values
+enum IdStatus {
+  Valid = "VALID",
+  Invalid = "INVALID",
+  Incomplete = "AMBIGUOUS",
+  None = "",
+}
 
-  // try to identify and validate
-  // handle pids that have prefix
-  if (prefix) {
-    // lowercase the prefix to easily match validators dictionary keys
-    prefix = prefix.toLowerCase();
-    // check if prefix is an urn
+// backend identify response schema
+type IdResponse = {
+  status: IdStatus;
+  type: string;
+  example: string;
+  resolution_modes: IdResponseResolutionMode[];
+};
 
-    let provider: Identifier = IDENTIFIERS[prefix];
-    // if provider indeed in identifiers
-    if (provider) {
-      // check first if its urn
+type IdResponseResolutionMode = {
+  mode: string;
+  name: string;
+};
 
-      // check if its valid
-      result.pidType = prefix;
-      if (result.pidType === "urn") {
-        for (const urnType of ["urn:nbn:de", "urn:nbn:fi"]) {
-          // if first item after prefix is a letter try to check old arxiv
-          provider = IDENTIFIERS[urnType];
-          // check if first part looks like arxiv.old using small regex
-          if (provider.regexPart?.test(pid)) {
-            result.pidType = urnType;
-            result.valid = provider.regex?.test(pid) || false;
-            break;
-          }
-        }
-      } else {
-        result.valid = provider.regex?.test(pid) || false;
-        // if arxiv and still not valid check if its old format
-        if (!result.valid && prefix === "arxiv") {
-          // if first item after prefix is a letter try to check old arxiv
-          provider = IDENTIFIERS["arxiv.old"];
-          // check if first part looks like arxiv.old using small regex
-          if (provider.regexPart?.test(pid)) {
-            result.pidType = "arxiv.old";
-            result.valid = provider.regex?.test(pid) || false;
-          }
-        }
-      }
-    }
+// generate resolve urls given resolve mode and pid
+function generateResolveURL(
+  resolutionMode: ResolutionModes,
+  pid: string,
+): string {
+  return `${RESOLVE_API_ROUTE}?pidMode=${resolutionMode}&redirect=true&pid=${pid}`;
+}
 
-    // handle pids with no prefix - epic handles
-  } else {
-    //check if it is zenodo
-    if (pid.length > 0 && pid.startsWith("10.5281".slice(0, pid.length))) {
-      result.pidType = "zenodo";
-      result.valid = IDENTIFIERS["zenodo"].regex?.test(pid) || false;
-      // check if its a new epic handle
-    } else if (pid.length > 0 && pid.startsWith("21.".slice(0, pid.length))) {
-      result.pidType = "epic";
-      result.valid = IDENTIFIERS["epic"].regex?.test(pid) || false;
-    } else if (IDENTIFIERS["epic.old"].regexPart?.test(pid)) {
-      result.pidType = "epic.old";
-      result.valid = IDENTIFIERS["epic.old"].regex?.test(pid) || false;
-    }
-  }
-
-  // if result is valid try to generate the jump url
-  if (result.valid) {
-    result.jumpURLs = jumpDefault(pid);
-    result.landing = IDENTIFIERS[result.pidType].landing;
-    result.metadata = IDENTIFIERS[result.pidType].metadata;
-    result.resource = IDENTIFIERS[result.pidType].resource;
-  } else {
-    result.jumpURLs = {
-      landing: "#",
-      metadata: "#",
-      resource: "#",
-    };
-    result.landing = false;
-    result.metadata = false;
-    result.resource = false;
-  }
-
-  return result;
+// Provide an initial state object for the ui
+function initResult(): IdResponse {
+  return {
+    type: "",
+    status: IdStatus.None,
+    example: "",
+    resolution_modes: [],
+  };
 }
 
 // Component to render the metaresolver page
@@ -274,81 +82,78 @@ function Main() {
     const pid = event.target.value.trim();
     // set pid value
     setPid(pid);
-    // calculate and set Validation result
-    setResult(validate(pid));
   }
 
+  useEffect(() => {
+    // debounce input so the backend is called after a given timeout since user stopped typing
+    const debounceProcessInput = setTimeout(async () => {
+      if (pid) {
+        try {
+          // Make a request to your backend API
+          const response = await fetch(`${IDENTIFY_API_ROUTE}?text=${pid}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch data");
+          }
+          // Assuming the response is in JSON format
+          const data: IdResponse = await response.json();
+          // Update state with the fetched data
+          setResult(data);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          console.log("done");
+        }
+      } else {
+        setResult(initResult());
+      }
+    }, DEBOUNCE_TIMEOUT);
+
+    return () => clearTimeout(debounceProcessInput);
+  }, [pid]);
+
+  // when user clicks on a provider example use it as an input value
   function handleGrabEg(event: MouseEvent) {
     const pid = (event.target as HTMLElement).dataset.example;
     setPid(pid || "");
-    setResult(validate(pid || ""));
   }
 
   // Handle tooltip message
   let tooltip = null;
+  const resolutionModes: string[] = useMemo(() => {
+    return result.resolution_modes.map((x) => x.mode);
+  }, [result.resolution_modes]);
   // if pid empty prompt user to enter something
-  if (!result.pidType || result.pidType === "unknown") {
+  if (result.type === "") {
     tooltip = (
       <div style={{ color: "grey" }}>
         <strong>Please enter a valid Pid</strong>
         <br />
-        <em>Supported formats: ark, arXiv, swh, doi, epic handle, urn:nbn</em>
-      </div>
-    );
-  } else if (result.pidType === "urn") {
-    tooltip = (
-      <div style={{ color: "grey" }}>
-        <strong>Please enter a valid urn:nbn:de or urn:nbn:fe pid</strong>
-        <br />
-        {"examples: "}
-        <span
-          className="fillin"
-          data-example={IDENTIFIERS["urn:nbn:de"].example}
-          onClick={(event) => {
-            handleGrabEg(event);
-          }}
-        >
-          {IDENTIFIERS["urn:nbn:de"].example}
-        </span>
-        <br />
-        <span
-          className="fillin"
-          data-example={IDENTIFIERS["urn:nbn:fi"].example}
-          onClick={(event) => {
-            handleGrabEg(event);
-          }}
-        >
-          {IDENTIFIERS["urn:nbn:fi"].example}
-        </span>
+        <em>
+          supported pids: ark, arXiv, swh, doi, urn:nbn{" "}
+          <Link to="/supported-pids"> and more...</Link>
+        </em>
       </div>
     );
   } else {
     tooltip = (
       <div>
         <strong>Format: </strong>
-        <span>{result.pidType + " "}</span>
-        {IDENTIFIERS[result.pidType].logo && (
-          <img
-            height="20px"
-            src={IDENTIFIERS[result.pidType].logo || ""}
-            alt={result.pidType}
-          />
-        )}
+        <span>{result.type + " "}</span>
         <span className="mx-2">-</span>
         <strong>Valid:</strong>
-        <span>{result.valid ? "✅" : "❌"}</span>
+        <span>{result.status === IdStatus.Valid ? "✅" : "❌"}</span>
         <br />
-        {!result.valid && (
+        {result.status === IdStatus.Incomplete && (
           <em style={{ color: "grey" }}>
             {"example: "}
             <span
               className="fillin"
-              data-example={IDENTIFIERS[result.pidType].example}
+              data-example={result.example}
               onClick={(event) => {
                 handleGrabEg(event);
               }}
             >
-              {IDENTIFIERS[result.pidType].example}
+              {result.example}
             </span>
           </em>
         )}
@@ -380,40 +185,36 @@ function Main() {
         <div className="info">{tooltip}</div>
         <br />
         {/* Resolve button */}
-        <strong
-          className={result.valid ? "" : "text-muted"}
-          style={{ fontSize: "1.2rem" }}
-        >
+        <strong className="text-muted" style={{ fontSize: "1.2rem" }}>
           resolve:{" "}
         </strong>{" "}
         <a
-          className={
-            "resolve-btn btn btn-lg btn-primary mr-2 " +
-            (result.landing ? "" : "disabled")
-          }
-          href={result.jumpURLs.landing}
+          className={`resolve-btn btn btn-lg btn-primary mr-2 ${
+            resolutionModes.includes(ResolutionModes.LandingPage)
+              ? ""
+              : "disabled"
+          }`}
+          href={generateResolveURL(ResolutionModes.LandingPage, pid)}
           target="_blank"
           rel="noreferrer"
         >
           <FaHome className="btn-ico" /> Landing Page
         </a>{" "}
         <a
-          className={
-            "resolve-btn btn btn-lg btn-primary " +
-            (result.metadata ? "" : "disabled")
-          }
-          href={result.jumpURLs.metadata}
+          className={`resolve-btn btn btn-lg btn-primary ${
+            resolutionModes.includes(ResolutionModes.Metadata) ? "" : "disabled"
+          }`}
+          href={generateResolveURL(ResolutionModes.Metadata, pid)}
           target="_blank"
           rel="noreferrer"
         >
           <FaBarcode className="btn-ico" /> Metadata
         </a>{" "}
         <a
-          className={
-            "resolve-btn btn btn-lg btn-primary " +
-            (result.resource ? "" : "disabled")
-          }
-          href={result.jumpURLs.resource}
+          className={`resolve-btn btn btn-lg btn-primary ${
+            resolutionModes.includes(ResolutionModes.Resource) ? "" : "disabled"
+          }`}
+          href={generateResolveURL(ResolutionModes.Resource, pid)}
           target="_blank"
           rel="noreferrer"
         >
@@ -487,7 +288,7 @@ function SupportedPIDS() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          PROVIDERS_URL + "?size=" + size + "&page=" + page,
+          PROVIDERS_API_ROUTE + "?size=" + size + "&page=" + page,
         );
         const json = await response.json();
         setData(json);
@@ -621,11 +422,12 @@ function SupportedPIDS() {
           <span className="mx-1">results per page: </span>
           <select
             name="per-page"
-            value="20"
+            value={searchParams.get("size") || "20"}
             id="per-page"
             onChange={handleChangeSize}
           >
-            <option value="5">5</option>∂<option value="20">20</option>
+            <option value="5">5</option>
+            <option value="20">20</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select>

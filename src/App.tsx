@@ -190,7 +190,8 @@ function Main() {
         </strong>{" "}
         <a
           className={`resolve-btn btn btn-lg btn-primary mr-2 ${
-            resolutionModes.includes(ResolutionModes.LandingPage)
+            resolutionModes.includes(ResolutionModes.LandingPage) &&
+            result.status === IdStatus.Valid
               ? ""
               : "disabled"
           }`}
@@ -202,7 +203,10 @@ function Main() {
         </a>{" "}
         <a
           className={`resolve-btn btn btn-lg btn-primary ${
-            resolutionModes.includes(ResolutionModes.Metadata) ? "" : "disabled"
+            resolutionModes.includes(ResolutionModes.Metadata) &&
+            result.status === IdStatus.Valid
+              ? ""
+              : "disabled"
           }`}
           href={generateResolveURL(ResolutionModes.Metadata, pid)}
           target="_blank"
@@ -212,7 +216,10 @@ function Main() {
         </a>{" "}
         <a
           className={`resolve-btn btn btn-lg btn-primary ${
-            resolutionModes.includes(ResolutionModes.Resource) ? "" : "disabled"
+            resolutionModes.includes(ResolutionModes.Resource) &&
+            result.status === IdStatus.Valid
+              ? ""
+              : "disabled"
           }`}
           href={generateResolveURL(ResolutionModes.Resource, pid)}
           target="_blank"

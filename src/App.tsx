@@ -6,13 +6,15 @@ import {
   useSearchParams,
   useNavigate,
 } from "react-router-dom";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Container, Navbar } from "react-bootstrap";
 
 import "./App.css";
-import logo from "./assets/logo.svg";
 import { FaBarcode } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaCube } from "react-icons/fa";
+import { AuthProvider, KeycloakLogout, ProtectedRoute } from "./auth";
+import AdminPanel from "./AdminPanel";
+import Navigation from "./Navigation";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
@@ -456,45 +458,31 @@ function SupportedPIDS() {
 // Main layout
 function App() {
   return (
-    <div className="App">
-      {/* Main Navigation bar */}
-      <Navbar variant="light" expand="lg" className="main-nav shadow-sm">
+    <AuthProvider>
+      <div className="App">
+        {/* Main Navigation bar */}
+        <Navbar variant="light" expand="lg" className="main-nav shadow-sm">
+          <Container>
+            <Navigation />
+          </Container>
+        </Navbar>
+
+        {/* Main content container - Renders views based on routes */}
         <Container>
-          {/* Branding logos */}
-          <Navbar.Brand href="/">
-            <img
-              src={logo}
-              height="40"
-              className="d-inline-block align-top"
-              alt="FAIRCORE4EOSC Pid Metaresolver"
-            />
-          </Navbar.Brand>
-
-          {/* Hamburger button */}
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-
-          {/* Collapsible part that holds navigation links */}
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link as={Link} to="/">
-                <strong>Metaresolver</strong>
-              </Nav.Link>
-              <Nav.Link as={Link} to="/supported-pids">
-                <strong>Supported PIDs</strong>
-              </Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="supported-pids" element={<SupportedPIDS />} />
+            <Route path="/admin" element={<ProtectedRoute />}>
+              <Route index element={<AdminPanel />} />
+            </Route>
+            <Route path="/login" element={<ProtectedRoute />}>
+              <Route index element={<AdminPanel />} />
+            </Route>
+            <Route path="/logout" element={<KeycloakLogout />} />
+          </Routes>
         </Container>
-      </Navbar>
-
-      {/* Main content container - Renders views based on routes */}
-      <Container>
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="supported-pids" element={<SupportedPIDS />} />
-        </Routes>
-      </Container>
-    </div>
+      </div>
+    </AuthProvider>
   );
 }
 

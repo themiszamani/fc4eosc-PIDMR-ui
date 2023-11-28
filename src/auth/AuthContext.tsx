@@ -4,6 +4,8 @@ import Keycloak from "keycloak-js";
 interface AuthContextProps {
   authenticated: boolean;
   setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  admin: boolean;
+  setAdmin: React.Dispatch<React.SetStateAction<boolean>>;
   userid: string;
   setUserid: React.Dispatch<React.SetStateAction<string>>;
   keycloak: NullableKeycloak; // Replace 'any' with the appropriate type for your keycloak object
@@ -19,6 +21,7 @@ type NullableKeycloak = null | Keycloak;
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authenticated, setAuthenticated] = useState(false);
   const [userid, setUserid] = useState("");
+  const [admin, setAdmin] = useState(false);
   const [keycloak, setKeycloak] = useState<NullableKeycloak>(null);
 
   const authContextValue: AuthContextProps = {
@@ -26,6 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuthenticated,
     userid,
     setUserid,
+    admin,
+    setAdmin,
     keycloak,
     setKeycloak,
   };

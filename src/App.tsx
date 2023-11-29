@@ -1,11 +1,5 @@
 import { useState, useEffect, ChangeEvent, MouseEvent, useMemo } from "react";
-import {
-  Routes,
-  Route,
-  Link,
-  useSearchParams,
-  useNavigate,
-} from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { Container, Navbar } from "react-bootstrap";
 
 import "./App.css";
@@ -13,13 +7,13 @@ import { FaBarcode } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaCube } from "react-icons/fa";
 import { AuthProvider, KeycloakLogout, ProtectedRoute } from "./auth";
-import AdminPanel from "./AdminPanel";
 import Navigation from "./Navigation";
+import AddEditProvider from "./AddEditProvider";
+import SupportedPids from "./SupportedPids";
+import { Toaster } from "react-hot-toast";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
-// TODO: pagination support in case of a large collection of providers - keep it simple for the time being
-const PROVIDERS_API_ROUTE = `${PIDMR_API}/v1/providers`;
 // Backend references used in resolving stuff
 const RESOLVE_API_ROUTE = `${PIDMR_API}/v1/metaresolvers/resolve`;
 // Backend references used in resolving stuff
@@ -234,232 +228,39 @@ function Main() {
   );
 }
 
-// Types for supported PIDS view
-type ApiResponse = {
-  size_of_page: number;
-  number_of_page: number;
-  total_elements: number;
-  total_pages: number;
-  content: Provider[];
-  links: ApiResponseLink[];
-};
-
-type ApiResponseLink = {
-  href: string;
-  rel: string;
-};
-
-type Provider = {
-  id: number;
-  type: string;
-  name: string;
-  description: string;
-  resolution_modes: ResolutionMode[];
-  regexes: RegExp[];
-};
-
-type ResolutionMode = {
-  mode: string;
-  name: string;
-};
-
-// Component to render a simple info page about supported PIDs
-function SupportedPIDS() {
-  // provider data from backend
-  const [data, setData] = useState<ApiResponse | null>(null);
-  // router urlparams for pagination
-  const [searchParams] = useSearchParams();
-  // navigate to change on pagination
-  const navigate = useNavigate();
-
-  function handleChangeSize(evt: { target: { value: string } }) {
-    // navigate to the same page but with new url parameter for size and go to first page
-    navigate("./?size=" + evt.target.value + "&page=1");
-  }
-
-  useEffect(() => {
-    // parse the page & size url params
-    let page = parseInt(searchParams.get("page") || "");
-    let size = parseInt(searchParams.get("size") || "");
-
-    // if no page given assume first
-    if (!page) {
-      page = 1;
-    }
-
-    // if no size given or size too big assume 20 and start at first page
-    if (!size || size > 100) {
-      size = 20;
-      page = 1;
-    }
-
-    // fetch the data from the api
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          PROVIDERS_API_ROUTE + "?size=" + size + "&page=" + page,
-        );
-        const json = await response.json();
-        setData(json);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [searchParams]);
-
-  // prepare the list of supported providers
-  const providers: React.ReactNode[] = [];
-
-  // prep the page navigation element
-  let pageNav = null;
-  // prep the element that holds the page next, prev controls
-  let pageFlip = null;
-
-  const pageSize = parseInt(searchParams.get("size") || "");
-
-  // if data is fetched and content exists do
-  if (data && data.content) {
-    // for each provider in data prepare its view
-    for (const item of data.content) {
-      // prep the supported modes element for the provider
-      const actions = [];
-      for (const actionItem of item.resolution_modes) {
-        actions.push(
-          <span
-            className="badge badge-small bg-secondary mx-1"
-            key={actionItem.mode}
-          >
-            {actionItem.name}
-          </span>,
-        );
-      }
-      // push to the provider list the element view of a provider
-      // the provider is rendered as a card with
-      // provider name and prefix in the card-header
-      // provider description in the card-body
-      // provider supported modes in the card-footer
-      providers.push(
-        <li key={item.type} className="m-4">
-          <div className="card">
-            <div className="card-header">
-              <div className="d-flex">
-                <span
-                  style={{ color: "black", border: "1px black solid" }}
-                  className="badge badge-small bg-warning"
-                >
-                  {item.type}
-                </span>
-                <strong style={{ marginLeft: "0.6rem" }}>{item.name}</strong>
-              </div>
-            </div>
-            <div className="card-body">{item.description}</div>
-            {actions.length > 0 && (
-              <div className="card-footer">
-                <div className="d-flex justify-content-end">
-                  <small className="text-secondary mx-2">modes:</small>
-                  {actions}
-                </div>
-              </div>
-            )}
-          </div>
-        </li>,
-      );
-    }
-
-    // if links exist render the page flip element
-    if (data.links && data.links.length > 0) {
-      const start = (data.number_of_page - 1) * pageSize;
-      const end = start + data.content.length;
-
-      pageFlip = (
-        <div className="d-flex justify-content-between">
-          <div>
-            {start > 0 && (
-              <>
-                <Link
-                  className="btn btn-primary btn-sm mx-2"
-                  to={"./?size=" + pageSize + "&page=1"}
-                >
-                  First
-                </Link>
-                <Link
-                  className="btn  btn-primary btn-sm mx-2"
-                  to={
-                    "./?size=" + pageSize + "&page=" + (data.number_of_page - 1)
-                  }
-                >
-                  ← Prev
-                </Link>
-              </>
-            )}
-            <span className="mx-4">
-              <strong>{start + 1}</strong> to <strong>{end}</strong> out of{" "}
-              <strong>{data.total_elements}</strong>
-            </span>
-            {end < data.total_elements && (
-              <>
-                <Link
-                  to={
-                    "./?size=" + pageSize + "&page=" + (data.number_of_page + 1)
-                  }
-                  className="btn  btn-primary btn-sm mx-2"
-                >
-                  Next →
-                </Link>
-                <Link
-                  to={"./?size=" + pageSize + "&page=" + data.total_pages}
-                  className="btn  btn-primary btn-sm mx-2"
-                >
-                  Last
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    // here render the page navigation footer
-    pageNav = (
-      <div className="d-flex justify-content-between">
-        <div></div>
-        {/* This is the optional element to flip between pages */}
-        {pageFlip}
-        {/* This is the element to select page size */}
-        <div>
-          <span className="mx-1">results per page: </span>
-          <select
-            name="per-page"
-            value={searchParams.get("size") || "20"}
-            id="per-page"
-            onChange={handleChangeSize}
-          >
-            <option value="5">5</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="my-5">
-      <h5>Supported Pids:</h5>
-      <ul className="list-unstyled">{providers}</ul>
-      <hr />
-      {pageNav}
-    </div>
-  );
-}
-
 // Main layout
 function App() {
   return (
     <AuthProvider>
       <div className="App">
+        {/* Toaster Section for notifications */}
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
+          toastOptions={{
+            // Define default options
+            className: " ",
+            duration: 2000,
+            position: "top-right",
+            style: {
+              background: "#363636",
+              color: "#fff",
+            },
+            success: {
+              style: {
+                background: "green",
+              },
+            },
+            error: {
+              style: {
+                background: "red",
+              },
+            },
+          }}
+        />
         {/* Main Navigation bar */}
         <Navbar variant="light" expand="lg" className="main-nav shadow-sm">
           <Container>
@@ -471,12 +272,21 @@ function App() {
         <Container>
           <Routes>
             <Route path="/" element={<Main />} />
-            <Route path="supported-pids" element={<SupportedPIDS />} />
-            <Route path="/admin" element={<ProtectedRoute />}>
-              <Route index element={<AdminPanel />} />
+            <Route path="/supported-pids" element={<SupportedPids />} />
+            <Route
+              path="/supported-pids/add"
+              element={<ProtectedRoute adminMode={true} />}
+            >
+              <Route index element={<AddEditProvider />} />
             </Route>
-            <Route path="/login" element={<ProtectedRoute />}>
-              <Route index element={<AdminPanel />} />
+            <Route
+              path="/supported-pids/edit/:id"
+              element={<ProtectedRoute adminMode={true} />}
+            >
+              <Route index element={<AddEditProvider editMode={true} />} />
+            </Route>
+            <Route path="/login" element={<ProtectedRoute adminMode={false} />}>
+              <Route index element={<SupportedPids />} />
             </Route>
             <Route path="/logout" element={<KeycloakLogout />} />
           </Routes>

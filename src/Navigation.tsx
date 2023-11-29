@@ -8,6 +8,17 @@ import { FaUser } from "react-icons/fa";
 function Navigation() {
   const { authenticated, userid } = useContext(AuthContext)!;
 
+  const trimUserid = (id: string): string => {
+    let res: string;
+    if (id.includes("@")) {
+      res =
+        id.substring(0, 6) + "..." + id.substring(id.indexOf("@"), id.length);
+    } else {
+      res = id.substring(0, 6) + "...";
+    }
+    return res;
+  };
+
   return (
     <>
       {/* Branding logos */}
@@ -43,21 +54,15 @@ function Navigation() {
           <>
             <Dropdown>
               <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                <FaUser /> {userid}
+                <FaUser /> {trimUserid(userid)}
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Dropdown.Item as={Link} to="/admin">
-                  Admin Panel
-                </Dropdown.Item>
                 <Dropdown.Item as={Link} to="/logout">
                   Logout
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-            {/* <Link to="/profile" className="my-2 btn btn-success dropdown-toggle">
-                  <span><FaUser /> {trimProfileID(userProfile.id)}</span>
-              </Link> */}
           </>
         )}
       </Navbar.Collapse>

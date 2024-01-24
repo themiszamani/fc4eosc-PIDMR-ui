@@ -11,6 +11,7 @@ import Navigation from "./Navigation";
 import AddEditProvider from "./AddEditProvider";
 import SupportedPids from "./SupportedPids";
 import { Toaster } from "react-hot-toast";
+import { Footer } from "./Footer";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
@@ -291,6 +292,8 @@ function App() {
             <Route path="/logout" element={<KeycloakLogout />} />
           </Routes>
         </Container>
+
+        <Footer />
       </div>
     </AuthProvider>
   );

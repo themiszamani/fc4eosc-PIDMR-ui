@@ -6,7 +6,6 @@
 
 .resolve-panel {
   display: block;
-  max-width: 600px;
   margin: 0 auto;
   text-align: center;
 }
@@ -38,6 +37,7 @@
 }
 
 .resolve-btn {
+  margin-bottom: 1rem;
   margin-left: 0.6rem;
 }
 

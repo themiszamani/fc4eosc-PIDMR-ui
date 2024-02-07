@@ -1,23 +1,50 @@
 import { useContext, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import Keycloak from "keycloak-js";
 import KeycloakConfig from "../keycloak.json";
+import { ProfileResponse } from "../types";
 
-export function ProtectedRoute({ adminMode = false }: { adminMode: boolean }) {
+const PIDMR_API = import.meta.env.VITE_PIDMR_API;
+const PROFILE_API_ROUTE = `${PIDMR_API}/v1/users/profile`;
+
+function roleMatch(roles: string[], routeRoles: string[]) {
+  return roles.some((roleItem) => routeRoles.includes(roleItem));
+}
+
+async function getProfile(token: string): Promise<ProfileResponse> {
+  try {
+    const response = await fetch(PROFILE_API_ROUTE, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data: ProfileResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error during authentication:", error);
+    // Handle the error or rethrow it for the calling code to handle
+    return { id: "", roles: [] };
+  }
+}
+
+export function ProtectedRoute({ routeRoles = [] }: { routeRoles: string[] }) {
   const {
     authenticated,
     setAuthenticated,
     setUserid,
     setKeycloak,
-    setAdmin,
-    admin,
+    setRoles,
+    roles,
   } = useContext(AuthContext)!;
 
   const navigate = useNavigate();
-  // this is needed to get the correct keycloak roles assigned to the backend service
-  const PIDMR_API_KEYCLOAK_SERVICE_NAME = import.meta.env
-    .VITE_PIDMR_API_KEYCLOAK_SERVICE_NAME;
 
   useEffect(() => {
     const initializeKeycloak = async () => {
@@ -30,29 +57,21 @@ export function ProtectedRoute({ adminMode = false }: { adminMode: boolean }) {
             checkLoginIframe: false,
             pkceMethod: "S256",
           });
-          const { voperson_id } = keycloakInstance.tokenParsed as {
-            voperson_id: string;
-          };
-          setUserid(voperson_id);
+
           setKeycloak(keycloakInstance);
           setAuthenticated(authenticated);
-          // try checking if the user has the admin role in the specific client
-          const resourceAccess = keycloakInstance.tokenParsed?.resource_access;
-          let isAdmin = false;
-          // check if the user has the admin role using the backend service name in the resource access dictionary
-          if (resourceAccess) {
-            console.log(resourceAccess, PIDMR_API_KEYCLOAK_SERVICE_NAME);
-            isAdmin =
-              resourceAccess[PIDMR_API_KEYCLOAK_SERVICE_NAME].roles.includes(
-                "admin",
-              );
+          // get token to get user profile
+
+          const profile = await getProfile(keycloakInstance.token || "");
+          setUserid(profile.id);
+          setRoles(profile.roles);
+
+          if (!roleMatch(profile.roles, routeRoles)) {
+            console.log(routeRoles, profile.roles);
+            console.log("you don't have privileges for this view");
+            // navigate somewhere else this view becomes empty because its only for admins
+            navigate("/logout");
           }
-          if (adminMode && !isAdmin) {
-            console.log("this is admin mode and you are not admin");
-            // navigate somerwhere else this view becomes empty because its only for admins
-            navigate("/");
-          }
-          setAdmin(isAdmin);
         }
       } catch (error) {
         console.error("Failed to initialize Keycloak:", error);
@@ -65,17 +84,23 @@ export function ProtectedRoute({ adminMode = false }: { adminMode: boolean }) {
     setAuthenticated,
     setKeycloak,
     setUserid,
-    setAdmin,
-    adminMode,
     navigate,
-    PIDMR_API_KEYCLOAK_SERVICE_NAME,
+    routeRoles,
+    setRoles,
   ]);
 
-  // if view is meant for admins and you are an admin get the view
-  if (adminMode && authenticated && admin) return <Outlet />;
-  // if view is meant for logged in users (but not admins) and you are authenticated get the view
-  else if (!adminMode && authenticated) return <Outlet />;
+  // if a role matches the route roles
+  if (roleMatch(roles, routeRoles)) {
+    return <Outlet />;
+  }
 
-  // render empty page
-  return null;
+  return (
+    <div style={{ height: "60vh" }} className="d-flex align-items-center">
+      <div className="mx-auto text-center">
+        <span>You are not allowed to be here</span>
+        <br />
+        <Link to="/">Return Home</Link>
+      </div>
+    </div>
+  );
 }

@@ -10,6 +10,7 @@ import { AuthProvider, KeycloakLogout, ProtectedRoute } from "./auth";
 import Navigation from "./Navigation";
 import AddEditProvider from "./AddEditProvider";
 import SupportedPids from "./SupportedPids";
+import ManagedPids from "./ManagedPids";
 import { Toaster } from "react-hot-toast";
 import { Footer } from "./Footer";
 
@@ -24,7 +25,7 @@ const DEBOUNCE_TIMEOUT = 300;
 
 // backend call to identify provider types
 
-// resolution mode valus
+// resolution mode values
 enum ResolutionModes {
   LandingPage = "landingpage",
   Metadata = "metadata",
@@ -275,19 +276,36 @@ function App() {
             <Route path="/" element={<Main />} />
             <Route path="/supported-pids" element={<SupportedPids />} />
             <Route
-              path="/supported-pids/add"
-              element={<ProtectedRoute adminMode={true} />}
+              path="/managed-pids"
+              element={
+                <ProtectedRoute routeRoles={["provider_admin", "admin"]} />
+              }
+            >
+              <Route index element={<ManagedPids />} />
+            </Route>
+            <Route
+              path="/managed-pids/add"
+              element={
+                <ProtectedRoute routeRoles={["provider_admin", "admin"]} />
+              }
             >
               <Route index element={<AddEditProvider />} />
             </Route>
             <Route
-              path="/supported-pids/edit/:id"
-              element={<ProtectedRoute adminMode={true} />}
+              path="/managed-pids/view/:id"
+              element={
+                <ProtectedRoute routeRoles={["provider_admin", "admin"]} />
+              }
             >
-              <Route index element={<AddEditProvider editMode={true} />} />
+              <Route index element={<AddEditProvider editMode={2} />} />
             </Route>
-            <Route path="/login" element={<ProtectedRoute adminMode={false} />}>
-              <Route index element={<SupportedPids />} />
+            <Route
+              path="/managed-pids/edit/:id"
+              element={
+                <ProtectedRoute routeRoles={["admin", "provider_admin"]} />
+              }
+            >
+              <Route index element={<AddEditProvider editMode={1} />} />
             </Route>
             <Route path="/logout" element={<KeycloakLogout />} />
           </Routes>

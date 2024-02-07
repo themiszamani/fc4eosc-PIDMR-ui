@@ -343,7 +343,7 @@ function ManagedPids() {
                       </small>
                       <strong className="badge bg-secondary">
                         <FaUser className="me-1" />
-                        {userid}
+                        {item.user_id}
                       </strong>
                     </div>
                   )}

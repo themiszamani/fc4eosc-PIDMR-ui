@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import logo from "./assets/logo.svg";
 import { AuthContext } from "./auth";
 import { useContext } from "react";
-import { FaUser } from "react-icons/fa";
+import { FaCog, FaSignOutAlt, FaUser } from "react-icons/fa";
 
 function Navigation() {
   const { authenticated, userid } = useContext(AuthContext)!;
@@ -46,7 +46,7 @@ function Navigation() {
         </Nav>
         {/* login button */}
         {!authenticated && (
-          <Link to="/login" className="btn btn-primary my-2">
+          <Link to="/managed-pids" className="btn btn-primary my-2">
             Login
           </Link>
         )}
@@ -58,8 +58,13 @@ function Navigation() {
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
+                <Dropdown.Item as={Link} to="/managed-pids">
+                  <FaCog className="me-2" />
+                  Manage PIDs
+                </Dropdown.Item>
+                <hr />
                 <Dropdown.Item as={Link} to="/logout">
-                  Logout
+                  <FaSignOutAlt className="me-2" /> Logout
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

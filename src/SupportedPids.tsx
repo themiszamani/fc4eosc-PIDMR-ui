@@ -1,30 +1,14 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
-import { AuthContext } from "./auth";
-import { FaEdit, FaPlusCircle, FaTrashAlt } from "react-icons/fa";
-import { ApiResponse, Provider } from "./types";
-import { DeleteModal } from "./DeleteModal";
-import { Button } from "react-bootstrap";
-import toast from "react-hot-toast";
+import { ApiResponse } from "./types";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 // TODO: pagination support in case of a large collection of providers - keep it simple for the time being
 const PROVIDERS_API_ROUTE = `${PIDMR_API}/v1/providers`;
-const PROVIDERS_ADMIN_API_ROUTE = `${PIDMR_API}/v1/admin/providers`;
-
-interface DeleteModalConfig {
-  show: boolean;
-  title: string;
-  message: string;
-  itemId: string;
-  itemName: string;
-}
 
 // Component to render a simple info page about supported PIDs
 function SupportedPids() {
-  const { admin } = useContext(AuthContext)!;
-
   // provider data from backend
   const [data, setData] = useState<ApiResponse | null>(null);
   // small trigger to refetch data when deleting items
@@ -33,66 +17,6 @@ function SupportedPids() {
   const [searchParams] = useSearchParams();
   // navigate to change on pagination
   const navigate = useNavigate();
-
-  const { keycloak } = useContext(AuthContext)!;
-
-  const [deleteModalConfig, setDeleteModalConfig] = useState<DeleteModalConfig>(
-    {
-      show: false,
-      title: "Delete PID Provider",
-      message: "Are you sure you want to delete the following PID Provider?",
-      itemId: "",
-      itemName: "",
-    },
-  );
-
-  const handleDeleteOpenModal = (item: Provider) => {
-    setDeleteModalConfig({
-      ...deleteModalConfig,
-      show: true,
-      itemId: item.id.toString(),
-      itemName: item.name,
-    });
-  };
-
-  const handleDeleteConfirmed = async (id: string) => {
-    if (keycloak) {
-      const url = PROVIDERS_ADMIN_API_ROUTE + "/" + id;
-      try {
-        const response = await fetch(url, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${keycloak.token}`,
-          },
-        });
-
-        if (response.ok) {
-          setDeleteModalConfig({
-            ...deleteModalConfig,
-            show: false,
-            itemId: "",
-            itemName: "",
-          });
-          // refresh data
-          toast.success("Provider deleted!");
-          setTriggerFetch(true);
-        } else {
-          response.json().then((data) => {
-            toast.error(
-              <div>
-                <strong>{`Error trying to delete Provider:`}</strong>
-                <br />
-                <span>{data.message}</span>
-              </div>,
-            );
-          });
-        }
-      } catch (error: unknown) {
-        console.error("Error:", error);
-      }
-    }
-  };
 
   function handleChangeSize(evt: { target: { value: string } }) {
     // navigate to the same page but with new url parameter for size and go to first page
@@ -176,26 +100,6 @@ function SupportedPids() {
                   </span>
                   <strong style={{ marginLeft: "0.6rem" }}>{item.name}</strong>
                 </div>
-                {admin && (
-                  <div>
-                    <Link
-                      to={`/supported-pids/edit/${item.id}`}
-                      className="btn btn-sm btn-outline-dark"
-                    >
-                      <FaEdit /> Edit
-                    </Link>
-                    <Button
-                      className="ms-2"
-                      size="sm"
-                      variant="outline-danger"
-                      onClick={() => {
-                        handleDeleteOpenModal(item);
-                      }}
-                    >
-                      <FaTrashAlt /> Delete
-                    </Button>
-                  </div>
-                )}
               </div>
             </div>
             <div className="card-body">{item.description}</div>
@@ -268,20 +172,6 @@ function SupportedPids() {
     // here render the page navigation footer
     pageNav = (
       <div className="d-flex justify-content-between">
-        <DeleteModal
-          show={deleteModalConfig.show}
-          title={deleteModalConfig.title}
-          message={deleteModalConfig.message}
-          itemId={deleteModalConfig.itemId}
-          itemName={deleteModalConfig.itemName}
-          onHide={() => {
-            setDeleteModalConfig({ ...deleteModalConfig, show: false });
-          }}
-          onDelete={() => {
-            handleDeleteConfirmed(deleteModalConfig.itemId);
-          }}
-        />
-        <div></div>
         {/* This is the optional element to flip between pages */}
         {pageFlip}
         {/* This is the element to select page size */}
@@ -309,13 +199,6 @@ function SupportedPids() {
         <div>
           <h5>Supported Pids:</h5>
         </div>
-        {admin && (
-          <div>
-            <Link className="btn-outline-dark btn" to="/supported-pids/add">
-              <FaPlusCircle /> Add new PID provider
-            </Link>
-          </div>
-        )}
       </div>
       <ul className="list-unstyled">{providers}</ul>
       <hr />

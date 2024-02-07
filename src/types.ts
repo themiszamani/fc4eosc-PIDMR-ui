@@ -8,6 +8,11 @@ export type ApiResponse = {
   links: ApiResponseLink[];
 };
 
+export type ProfileResponse = {
+  id: string;
+  roles: string[];
+};
+
 export type ApiResponseLink = {
   href: string;
   rel: string;
@@ -20,7 +25,9 @@ export type Provider = {
   description: string;
   resolution_modes: ResolutionMode[];
   regexes: string[];
+  status?: string;
   example?: string;
+  user_id: string | null;
 };
 
 export type ResolutionMode = {

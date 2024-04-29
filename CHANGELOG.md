@@ -2,6 +2,16 @@
 
 All notable changes in FC4E-CAT-UI project are documented here
 
+## [v1.1.0](https://github.com/FC4E-CAT/fc4e-cat-ui/releases/tag/v1.1.0) (2024-04-29)
+
+### Added
+
+- PIDMR-128 Process of accepting new provider ([#29](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/29))
+
+### Fixed
+
+- PIDMR-137 Fix created by field in managed pids ([#30](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/30))
+
 ## [v1.0.0](https://github.com/FC4E-CAT/fc4e-cat-ui/releases/tag/v1.0.0) (2024-01-24)
 
 ### Added

@@ -10,3 +10,39 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.info-icon {
+  margin-left: 5px;
+  cursor: default;
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: lightgray;
+  color: white;
+  text-align: center;
+  line-height: 1em;
+  border-radius: 50%;
+  font-size: 14px;
+}
+
+.info-icon .info-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: white;
+  text-align: left;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 20px;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.info-icon:hover .info-text {
+  visibility: visible;
+  opacity: 1;
+}

@@ -103,8 +103,9 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           response.json().then((data) => {
             toast.error(
               <div>
-                <strong>{`Error trying to ${editMode ? "update" : "add new"
-                  } Provider:`}</strong>
+                <strong>{`Error trying to ${
+                  editMode ? "update" : "add new"
+                } Provider:`}</strong>
                 <br />
                 <span>{data.message}</span>
               </div>,
@@ -163,7 +164,9 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formProviderPidType">
               <Form.Label>PID Type</Form.Label>
-              <span className="info-icon"> i
+              <span className="info-icon">
+                {" "}
+                i
                 <span className="info-text">
                   {AddEditProviderInfo.type.info}
                 </span>
@@ -178,7 +181,9 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
 
             <Form.Group as={Col} controlId="formProviderName">
               <Form.Label>Name</Form.Label>
-              <span className="info-icon"> i
+              <span className="info-icon">
+                {" "}
+                i
                 <span className="info-text">
                   {AddEditProviderInfo.name.info}
                 </span>
@@ -193,10 +198,10 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           </Row>
           <Form.Group className="mb-3" controlId="formProviderDescription">
             <Form.Label>Description</Form.Label>
-            <span className="info-icon"> i
-              <span className="info-text">
-                {AddEditProviderInfo.name.info}
-              </span>
+            <span className="info-icon">
+              {" "}
+              i
+              <span className="info-text">{AddEditProviderInfo.name.info}</span>
             </span>
             <Form.Control
               as="textarea"
@@ -210,7 +215,9 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProviderRegexes">
             <Form.Label>Regexes used for identification</Form.Label>
-            <span className="info-icon"> i
+            <span className="info-icon">
+              {" "}
+              i
               <span className="info-text">
                 {AddEditProviderInfo.regexes.info}
               </span>
@@ -250,7 +257,9 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           <Form.Group className="mb-3" controlId="formProviderResolve">
             <div className="mb-2">
               <span>Select resolve modes that this provider supports</span>
-              <span className="info-icon"> i
+              <span className="info-icon">
+                {" "}
+                i
                 <span className="info-text">
                   {AddEditProviderInfo.modes.info}
                 </span>
@@ -294,7 +303,9 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProviderExample">
             <Form.Label>PID Example</Form.Label>
-            <span className="info-icon"> i
+            <span className="info-icon">
+              {" "}
+              i
               <span className="info-text">
                 {AddEditProviderInfo.example.info}
               </span>

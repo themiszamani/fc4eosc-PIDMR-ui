@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Provider, ProviderInput } from "./types";
 import { toast } from "react-hot-toast";
+import { AddEditProviderInfo } from "./InfoText";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
@@ -162,7 +163,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         <fieldset disabled={editMode === 2}>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formProviderPidType">
-              <Form.Label>PID Type:</Form.Label>
+              <Form.Label>PID Type</Form.Label>
+              <span className="info-icon">
+                {" "}
+                i
+                <span className="info-text">
+                  {AddEditProviderInfo.type.info}
+                </span>
+              </span>
               <Form.Control
                 type="text"
                 placeholder="Enter PID Type"
@@ -172,7 +180,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formProviderName">
-              <Form.Label>Name:</Form.Label>
+              <Form.Label>Name</Form.Label>
+              <span className="info-icon">
+                {" "}
+                i
+                <span className="info-text">
+                  {AddEditProviderInfo.name.info}
+                </span>
+              </span>
               <Form.Control
                 type="text"
                 placeholder="Enter PID Name"
@@ -182,7 +197,12 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
             </Form.Group>
           </Row>
           <Form.Group className="mb-3" controlId="formProviderDescription">
-            <Form.Label>Description:</Form.Label>
+            <Form.Label>Description</Form.Label>
+            <span className="info-icon">
+              {" "}
+              i
+              <span className="info-text">{AddEditProviderInfo.name.info}</span>
+            </span>
             <Form.Control
               as="textarea"
               rows={2}
@@ -194,7 +214,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProviderRegexes">
-            <Form.Label>Regexes used for identification:</Form.Label>
+            <Form.Label>Regexes used for identification</Form.Label>
+            <span className="info-icon">
+              {" "}
+              i
+              <span className="info-text">
+                {AddEditProviderInfo.regexes.info}
+              </span>
+            </span>
             {info.regexes.map((item, index) => (
               <div className="mb-2 d-flex justify-content-between" key={index}>
                 <Form.Control
@@ -229,7 +256,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProviderResolve">
             <div className="mb-2">
-              <span>Select resolve modes that this provider supports:</span>
+              <span>Select resolve modes that this provider supports</span>
+              <span className="info-icon">
+                {" "}
+                i
+                <span className="info-text">
+                  {AddEditProviderInfo.modes.info}
+                </span>
+              </span>
             </div>
             <div className="ms-4">
               <Form.Check
@@ -268,7 +302,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
             </div>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProviderExample">
-            <Form.Label>PID Example:</Form.Label>
+            <Form.Label>PID Example</Form.Label>
+            <span className="info-icon">
+              {" "}
+              i
+              <span className="info-text">
+                {AddEditProviderInfo.example.info}
+              </span>
+            </span>
             <Form.Control
               type="text"
               placeholder="Provide a valid PID as an example"

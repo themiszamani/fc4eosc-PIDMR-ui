@@ -9,6 +9,8 @@ const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const PROFILE_API_ROUTE = `${PIDMR_API}/v1/users/profile`;
 
 function roleMatch(roles: string[], routeRoles: string[]) {
+  // if route has no required roles defined -> return always true
+  if (!routeRoles.length) return true;
   return roles.some((roleItem) => routeRoles.includes(roleItem));
 }
 

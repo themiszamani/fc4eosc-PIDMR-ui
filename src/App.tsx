@@ -311,7 +311,7 @@ function App() {
             <Route
               path="/user-role"
               element={
-                <ProtectedRoute routeRoles={["provider_admin", "admin"]} />
+                <ProtectedRoute routeRoles={[]} />
               }
             >
               <Route index element={<UserRole />} />

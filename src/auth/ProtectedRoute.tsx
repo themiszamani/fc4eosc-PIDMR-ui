@@ -67,10 +67,10 @@ export function ProtectedRoute({ routeRoles = [] }: { routeRoles: string[] }) {
           setRoles(profile.roles);
 
           if (!roleMatch(profile.roles, routeRoles)) {
-            console.log(routeRoles, profile.roles);
-            console.log("you don't have privileges for this view");
+            // console.log(routeRoles, profile.roles);
+            // console.log("you don't have privileges for this view");
             // navigate somewhere else this view becomes empty because its only for admins
-            navigate("/logout");
+            navigate("/user-role");
           }
         }
       } catch (error) {

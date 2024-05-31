@@ -9,6 +9,7 @@ import { FaCube } from "react-icons/fa";
 import { AuthProvider, KeycloakLogout, ProtectedRoute } from "./auth";
 import Navigation from "./Navigation";
 import AddEditProvider from "./AddEditProvider";
+import UserRole from "./UserRole";
 import SupportedPids from "./SupportedPids";
 import ManagedPids from "./ManagedPids";
 import { Toaster } from "react-hot-toast";
@@ -306,6 +307,14 @@ function App() {
               }
             >
               <Route index element={<AddEditProvider editMode={1} />} />
+            </Route>
+            <Route
+              path="/user-role"
+              element={
+                <ProtectedRoute routeRoles={["provider_admin", "admin"]} />
+              }
+            >
+              <Route index element={<UserRole />} />
             </Route>
             <Route path="/logout" element={<KeycloakLogout />} />
           </Routes>

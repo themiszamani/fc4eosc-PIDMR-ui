@@ -22,7 +22,9 @@ function RequestRolePromotion() {
     description: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -90,7 +92,9 @@ function RequestRolePromotion() {
           <Form.Group as={Col} controlId="formUserName">
             <Form.Label>
               {PromotionRequestInfo.name.label}
-              <span className="info-icon"> i
+              <span className="info-icon">
+                {" "}
+                i
                 <span className="info-text">
                   {PromotionRequestInfo.name.info}
                 </span>
@@ -108,7 +112,9 @@ function RequestRolePromotion() {
           <Form.Group as={Col} controlId="formUserSurname">
             <Form.Label>
               {PromotionRequestInfo.surname.label}
-              <span className="info-icon"> i
+              <span className="info-icon">
+                {" "}
+                i
                 <span className="info-text">
                   {PromotionRequestInfo.surname.info}
                 </span>
@@ -126,7 +132,9 @@ function RequestRolePromotion() {
         <Form.Group className="mb-3" controlId="formUserEmail">
           <Form.Label>
             {PromotionRequestInfo.email.label}
-            <span className="info-icon"> i
+            <span className="info-icon">
+              {" "}
+              i
               <span className="info-text">
                 {PromotionRequestInfo.email.info}
               </span>
@@ -151,7 +159,9 @@ function RequestRolePromotion() {
         <Form.Group className="mb-3" controlId="formUserDescription">
           <Form.Label>
             {PromotionRequestInfo.description.label}
-            <span className="info-icon"> i
+            <span className="info-icon">
+              {" "}
+              i
               <span className="info-text">
                 {PromotionRequestInfo.description.info}
               </span>
@@ -167,7 +177,11 @@ function RequestRolePromotion() {
           />
         </Form.Group>
         <Button onClick={handleSubmit}>Submit</Button>
-        <Button variant="secondary" className="ms-2" onClick={() => navigate("/logout")}>
+        <Button
+          variant="secondary"
+          className="ms-2"
+          onClick={() => navigate("/logout")}
+        >
           Cancel
         </Button>
       </Form>

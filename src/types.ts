@@ -23,6 +23,7 @@ export type Provider = {
   type: string;
   name: string;
   description: string;
+  relies_on_dois: boolean;
   resolution_modes: ResolutionMode[];
   regexes: string[];
   status?: string;
@@ -32,14 +33,15 @@ export type Provider = {
 
 export type ResolutionMode = {
   mode: string;
-  name: string;
+  endpoint: string;
 };
 
 export type ProviderInput = {
   type: string;
   name: string;
   description: string;
-  resolution_modes: string[];
+  relies_on_dois: boolean;
+  resolution_modes: ResolutionMode[];
   regexes: string[];
   example?: string;
 };

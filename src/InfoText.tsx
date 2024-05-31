@@ -8,6 +8,7 @@ interface ProviderInfo {
   name: FieldInfo;
   description: FieldInfo;
   regexes: FieldInfo;
+  relies_on_dois: FieldInfo;
   modes: FieldInfo;
   example: FieldInfo;
 }
@@ -36,6 +37,10 @@ const AddEditProviderInfo: ProviderInfo = {
   regexes: {
     label: "Label",
     info: "This is the info text for Regexes used!",
+  },
+  relies_on_dois: {
+    label: "Label",
+    info: "This is the info text for DOIs!",
   },
   modes: {
     label: "Label",

@@ -32,6 +32,7 @@ export type Provider = {
 };
 
 export type ResolutionMode = {
+  name: string;
   mode: string;
   endpoint: string;
 };

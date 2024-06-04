@@ -12,7 +12,6 @@ const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const PROVIDERS_ADMIN_API_ROUTE = `${PIDMR_API}/v2/admin/providers`;
 const PROVIDERS_ADMIN_API_ROUTE_V1 = `${PIDMR_API}/v1/admin/providers`;
 
-
 function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
   const navigate = useNavigate();
   const params = useParams();
@@ -50,13 +49,16 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     const handleGet = async (id: string) => {
       if (keycloak) {
         try {
-          const response = await fetch(PROVIDERS_ADMIN_API_ROUTE_V1 + "/" + id, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${keycloak.token}`,
+          const response = await fetch(
+            PROVIDERS_ADMIN_API_ROUTE_V1 + "/" + id,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${keycloak.token}`,
+              },
             },
-          });
+          );
 
           if (response.ok) {
             const responseData = (await response.json()) as Provider;
@@ -110,8 +112,9 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           response.json().then((data) => {
             toast.error(
               <div>
-                <strong>{`Error trying to ${editMode ? "update" : "add new"
-                  } Provider:`}</strong>
+                <strong>{`Error trying to ${
+                  editMode ? "update" : "add new"
+                } Provider:`}</strong>
                 <br />
                 <span>{data.message}</span>
               </div>,
@@ -133,7 +136,10 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     if (checked) {
       setInfo({
         ...info,
-        resolution_modes: [...info.resolution_modes, { name: "", mode, endpoint: "" }],
+        resolution_modes: [
+          ...info.resolution_modes,
+          { name: "", mode, endpoint: "" },
+        ],
       });
     } else {
       setInfo({
@@ -320,8 +326,9 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                       label={mode.charAt(0).toUpperCase() + mode.slice(1)}
                       name="formProviderResolve"
                       type="checkbox"
-                      id={`providerResolve${mode.charAt(0).toUpperCase() + mode.slice(1)
-                        }`}
+                      id={`providerResolve${
+                        mode.charAt(0).toUpperCase() + mode.slice(1)
+                      }`}
                       checked={hasResolution(mode)}
                       onChange={(e) => {
                         handleCheckBoxChange(mode, e.target.checked);

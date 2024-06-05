@@ -8,7 +8,7 @@ import { PromotionRequestInfo } from "./InfoText";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
-const PROMOTE_USER_ROLE_API_ROUTE = `${PIDMR_API}/v1/users/promote-user-role`;
+const PROMOTE_USER_ROLE_API_ROUTE = `${PIDMR_API}/v1/users/role-change-request`;
 
 function RequestRolePromotion() {
   const navigate = useNavigate();

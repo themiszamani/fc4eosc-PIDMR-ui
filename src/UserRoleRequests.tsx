@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { Button, Form } from "react-bootstrap";
 import { RoleChangeRequest } from "./types";
@@ -31,7 +31,7 @@ const RoleChangeRequestsTable: React.FC = () => {
   const [filterText, setFilterText] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
-  const fetchRoleChangeRequests = async () => {
+  const fetchRoleChangeRequests = useCallback(async () => {
     if (keycloak) {
       try {
         const response = await fetch(PROMOTE_USER_ROLE_API_ROUTE, {
@@ -53,11 +53,14 @@ const RoleChangeRequestsTable: React.FC = () => {
         toast.error("Error fetching role change requests. Please try again.");
       }
     }
-  };
+  }, [keycloak]);
 
   useEffect(() => {
-    fetchRoleChangeRequests();
-  }, [keycloak]);
+    const fetchRequests = async () => {
+      await fetchRoleChangeRequests();
+    };
+    fetchRequests();
+  }, [fetchRoleChangeRequests]);
 
   const UpdateStatus = async (row: RoleChangeRequest, status: string) => {
     if (keycloak) {

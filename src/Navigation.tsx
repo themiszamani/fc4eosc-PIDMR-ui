@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import logo from "./assets/logo.svg";
 import { AuthContext } from "./auth";
 import { useContext } from "react";
-import { FaCog, FaSignOutAlt, FaUser } from "react-icons/fa";
+import { FaCog, FaSignOutAlt, FaUser, FaUserCheck } from "react-icons/fa";
 
 function Navigation() {
   const { authenticated, userid } = useContext(AuthContext)!;
@@ -61,6 +61,10 @@ function Navigation() {
                 <Dropdown.Item as={Link} to="/managed-pids">
                   <FaCog className="me-2" />
                   Manage PIDs
+                </Dropdown.Item>
+                <Dropdown.Item as={Link} to="/user-role-requests">
+                  <FaUserCheck className="me-2" />
+                  Role Requests
                 </Dropdown.Item>
                 <hr />
                 <Dropdown.Item as={Link} to="/logout">

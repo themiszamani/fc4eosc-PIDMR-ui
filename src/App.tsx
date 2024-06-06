@@ -10,6 +10,7 @@ import { AuthProvider, KeycloakLogout, ProtectedRoute } from "./auth";
 import Navigation from "./Navigation";
 import AddEditProvider from "./AddEditProvider";
 import UserRole from "./UserRole";
+import UserRoleRequests from "./UserRoleRequests";
 import SupportedPids from "./SupportedPids";
 import ManagedPids from "./ManagedPids";
 import { Toaster } from "react-hot-toast";
@@ -313,6 +314,14 @@ function App() {
               element={<ProtectedRoute routeRoles={[]} />}
             >
               <Route index element={<UserRole />} />
+            </Route>
+            <Route
+              path="/user-role-requests"
+              element={
+                <ProtectedRoute routeRoles={["admin", "provider_admin"]} />
+              }
+            >
+              <Route index element={<UserRoleRequests />} />
             </Route>
             <Route path="/logout" element={<KeycloakLogout />} />
           </Routes>

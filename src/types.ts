@@ -46,3 +46,17 @@ export type ProviderInput = {
   regexes: string[];
   example?: string;
 };
+
+export type RoleChangeRequest = {
+  id: number;
+  user_id: string;
+  name: string;
+  surname: string;
+  email: string;
+  role: string;
+  description: string;
+  requested_on: string;
+  updated_on: string;
+  updated_by: string;
+  status: string;
+};

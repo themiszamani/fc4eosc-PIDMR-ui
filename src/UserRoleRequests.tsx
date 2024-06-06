@@ -56,10 +56,7 @@ const RoleChangeRequestsTable: React.FC = () => {
   }, [keycloak]);
 
   useEffect(() => {
-    const fetchRequests = async () => {
-      await fetchRoleChangeRequests();
-    };
-    fetchRequests();
+    fetchRoleChangeRequests();
   }, [fetchRoleChangeRequests]);
 
   const UpdateStatus = async (row: RoleChangeRequest, status: string) => {
@@ -131,18 +128,38 @@ const RoleChangeRequestsTable: React.FC = () => {
       name: "Actions",
       cell: (row: RoleChangeRequest) => (
         <div>
-          <div
-            className="btn btn-sm btn-success"
-            onClick={() => UpdateStatus(row, "APPROVED")}
-          >
-            Approve
-          </div>
-          <div
-            className="btn btn-sm btn-danger m-1"
-            onClick={() => UpdateStatus(row, "REJECTED")}
-          >
-            Reject
-          </div>
+          {row.status === "PENDING" && (
+            <>
+              <div
+                className="btn btn-sm btn-success"
+                onClick={() => UpdateStatus(row, "APPROVED")}
+              >
+                Approve
+              </div>
+              <div
+                className="btn btn-sm btn-danger m-1"
+                onClick={() => UpdateStatus(row, "REJECTED")}
+              >
+                Reject
+              </div>
+            </>
+          )}
+          {row.status === "REJECTED" && (
+            <div
+              className="btn btn-sm btn-success"
+              onClick={() => UpdateStatus(row, "APPROVED")}
+            >
+              Approve
+            </div>
+          )}
+          {row.status === "APPROVED" && (
+            <div
+              className="btn btn-sm btn-danger"
+              onClick={() => UpdateStatus(row, "REJECTED")}
+            >
+              Reject
+            </div>
+          )}
         </div>
       ),
       width: "180px",

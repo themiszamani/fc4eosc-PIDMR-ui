@@ -24,31 +24,31 @@ interface UserInfo {
 const AddEditProviderInfo: ProviderInfo = {
   type: {
     label: "Label",
-    info: "This is the info text for PID Type!",
+    info: "Please add the Name of the PID Type!",
   },
   name: {
     label: "Label",
-    info: "This is the info text for Name!",
+    info: "Please add the Name of the Provider",
   },
   description: {
     label: "Label",
-    info: "This is the info text for Description!",
+    info: "Please add a small description of the Provider",
   },
   regexes: {
     label: "Label",
-    info: "This is the info text for Regexes used!",
+    info: "Please define one or more regexes that represent your Persistent Identifier",
   },
   relies_on_dois: {
     label: "Label",
-    info: "This is the info text for DOIs!",
+    info: "Please define is based on the DOI technology",
   },
   modes: {
     label: "Label",
-    info: "This is the info text for Resolved modes!",
+    info: "Please select the mode that you support as provider.",
   },
   example: {
     label: "Label",
-    info: "This is the info text for PID example!",
+    info: "Please add a PID that could be used as an example in the PID Meta Resolver",
   },
 };
 

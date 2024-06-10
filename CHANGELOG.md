@@ -2,6 +2,15 @@
 
 All notable changes in FC4E-CAT-UI project are documented here
 
+## [v1.2.0](https://github.com/FC4E-CAT/fc4e-cat-ui/releases/tag/v1.2.0) (2024-06-10)
+
+### Added:
+  - PIDMR-163: Added info icons to the add/edit provider form ([#33](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/33))
+  - PIDMR-165: Added rely on DOI checkbox to the add/edit provider form ([#37](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/37))
+  - PIDMR-166: Added resolution endpoints to the add/edit provider form ([#37](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/37))
+  - PIDMR-167: Added a registration form for the new users ([#36](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/36), [#41](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/41))
+  - PIDMR-171: Added a role request management table ([#38](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/38), [#39](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/39), [#42](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/42))
+
 ## [v1.1.0](https://github.com/FC4E-CAT/fc4e-cat-ui/releases/tag/v1.1.0) (2024-04-29)
 
 ### Added

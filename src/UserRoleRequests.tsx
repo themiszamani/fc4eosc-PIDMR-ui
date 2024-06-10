@@ -98,32 +98,46 @@ const RoleChangeRequestsTable: React.FC = () => {
     {
       name: "Name",
       selector: (row) => row.name,
+      cell: (row) => (
+        <div className="row">
+          <div>
+            {row.name} {row.surname}{" "}
+          </div>
+          <div style={{ color: "gray", fontSize: "12px" }}>
+            id: {row.user_id.substring(0, 10)}..
+          </div>
+        </div>
+      ),
       sortable: true,
-    },
-    {
-      name: "Surname",
-      selector: (row) => row.surname,
-      sortable: true,
+      wrap: true,
+      width: "200px",
     },
     {
       name: "Email",
       selector: (row) => row.email,
       sortable: true,
+      wrap: true,
     },
-    { name: "Role", selector: (row) => row.role, sortable: true },
+    { name: "Role", selector: (row) => row.role, sortable: true, wrap: true },
     {
       name: "Description",
       selector: (row) => row.description,
       sortable: true,
       wrap: true,
+      width: "140px",
     },
     {
       name: "Requested On",
-      selector: (row) => row.requested_on,
+      selector: (row) => row.requested_on.substring(0, 16).replace("T", " "),
       sortable: true,
-      wrap: true,
+      width: "180px",
     },
-    { name: "Status", selector: (row) => row.status, sortable: true },
+    {
+      name: "Status",
+      selector: (row) => row.status,
+      sortable: true,
+      width: "110px",
+    },
     {
       name: "Actions",
       cell: (row: RoleChangeRequest) => (

@@ -7,6 +7,7 @@ import { FaCog, FaSignOutAlt, FaUser, FaUserCheck } from "react-icons/fa";
 
 function Navigation() {
   const { authenticated, userid } = useContext(AuthContext)!;
+  const { roles } = useContext(AuthContext)!;
 
   const trimUserid = (id: string): string => {
     let res: string;
@@ -17,6 +18,10 @@ function Navigation() {
       res = id.substring(0, 6) + "...";
     }
     return res;
+  };
+
+  const hasRole = (role: string) => {
+    return roles.includes(role);
   };
 
   return (
@@ -62,10 +67,12 @@ function Navigation() {
                   <FaCog className="me-2" />
                   Manage PIDs
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to="/user-role-requests">
-                  <FaUserCheck className="me-2" />
-                  Role Requests
-                </Dropdown.Item>
+                {hasRole("admin") || hasRole("provider_admin") ? (
+                  <Dropdown.Item as={Link} to="/user-role-requests">
+                    <FaUserCheck className="me-2" />
+                    Role Requests
+                  </Dropdown.Item>
+                ) : null}
                 <hr />
                 <Dropdown.Item as={Link} to="/logout">
                   <FaSignOutAlt className="me-2" /> Logout

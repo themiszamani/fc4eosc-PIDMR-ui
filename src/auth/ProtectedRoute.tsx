@@ -9,6 +9,8 @@ const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const PROFILE_API_ROUTE = `${PIDMR_API}/v1/users/profile`;
 
 function roleMatch(roles: string[], routeRoles: string[]) {
+  // if route has no required roles defined -> return always true
+  if (!routeRoles.length) return true;
   return roles.some((roleItem) => routeRoles.includes(roleItem));
 }
 
@@ -67,10 +69,10 @@ export function ProtectedRoute({ routeRoles = [] }: { routeRoles: string[] }) {
           setRoles(profile.roles);
 
           if (!roleMatch(profile.roles, routeRoles)) {
-            console.log(routeRoles, profile.roles);
-            console.log("you don't have privileges for this view");
+            // console.log(routeRoles, profile.roles);
+            // console.log("you don't have privileges for this view");
             // navigate somewhere else this view becomes empty because its only for admins
-            navigate("/logout");
+            navigate("/user-role");
           }
         }
       } catch (error) {

@@ -23,6 +23,7 @@ export type Provider = {
   type: string;
   name: string;
   description: string;
+  relies_on_dois: boolean;
   resolution_modes: ResolutionMode[];
   regexes: string[];
   status?: string;
@@ -31,15 +32,31 @@ export type Provider = {
 };
 
 export type ResolutionMode = {
-  mode: string;
   name: string;
+  mode: string;
+  endpoint: string;
 };
 
 export type ProviderInput = {
   type: string;
   name: string;
   description: string;
-  resolution_modes: string[];
+  relies_on_dois: boolean;
+  resolution_modes: ResolutionMode[];
   regexes: string[];
   example?: string;
+};
+
+export type RoleChangeRequest = {
+  id: number;
+  user_id: string;
+  name: string;
+  surname: string;
+  email: string;
+  role: string;
+  description: string;
+  requested_on: string;
+  updated_on: string;
+  updated_by: string;
+  status: string;
 };

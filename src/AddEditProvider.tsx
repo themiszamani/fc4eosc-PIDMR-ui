@@ -5,10 +5,12 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Provider, ProviderInput } from "./types";
 import { toast } from "react-hot-toast";
+import { AddEditProviderInfo } from "./InfoText";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
-const PROVIDERS_ADMIN_API_ROUTE = `${PIDMR_API}/v1/admin/providers`;
+const PROVIDERS_ADMIN_API_ROUTE = `${PIDMR_API}/v2/admin/providers`;
+const PROVIDERS_ADMIN_API_ROUTE_V1 = `${PIDMR_API}/v1/admin/providers`;
 
 function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     name: "",
     description: "",
     example: "",
+    relies_on_dois: false,
     resolution_modes: [],
     regexes: [""],
   });
@@ -46,21 +49,26 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     const handleGet = async (id: string) => {
       if (keycloak) {
         try {
-          const response = await fetch(PROVIDERS_ADMIN_API_ROUTE + "/" + id, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${keycloak.token}`,
+          const response = await fetch(
+            PROVIDERS_ADMIN_API_ROUTE_V1 + "/" + id,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${keycloak.token}`,
+              },
             },
-          });
+          );
 
           if (response.ok) {
             const responseData = (await response.json()) as Provider;
             const loadedInfo = {
               ...responseData,
-              resolution_modes: responseData.resolution_modes.map(
-                (item) => item.mode,
-              ),
+              resolution_modes: responseData.resolution_modes.map((item) => ({
+                name: item.name,
+                mode: item.mode,
+                endpoint: item.endpoint || "",
+              })),
             };
             console.log(loadedInfo);
             setInfo(loadedInfo);
@@ -79,6 +87,8 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
 
   const handleSubmit = async () => {
     if (keycloak) {
+      console.log(info);
+
       const method = editMode ? "PATCH" : "POST";
       const url = editMode
         ? PROVIDERS_ADMIN_API_ROUTE + "/" + params.id
@@ -119,19 +129,37 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
   };
 
   const hasResolution = (mode: string) => {
-    return info.resolution_modes.includes(mode);
+    return info.resolution_modes.some((item) => item.mode === mode);
   };
 
   const handleCheckBoxChange = (mode: string, checked: boolean) => {
-    const inList = hasResolution(mode);
-    if (inList && !checked) {
+    if (checked) {
       setInfo({
         ...info,
-        resolution_modes: info.resolution_modes.filter((item) => item !== mode),
+        resolution_modes: [
+          ...info.resolution_modes,
+          { name: "", mode, endpoint: "" },
+        ],
       });
-    } else if (!inList && checked) {
-      setInfo({ ...info, resolution_modes: [...info.resolution_modes, mode] });
+    } else {
+      setInfo({
+        ...info,
+        resolution_modes: info.resolution_modes.filter(
+          (item) => item.mode !== mode,
+        ),
+      });
     }
+  };
+
+  const handleEndpointChange = (mode: string, endpoint: string) => {
+    const updatedModes = info.resolution_modes.map((item) =>
+      item.mode === mode ? { ...item, endpoint } : item,
+    );
+    setInfo({ ...info, resolution_modes: updatedModes });
+  };
+
+  const handleReliesOnDoisChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInfo({ ...info, relies_on_dois: e.target.checked });
   };
 
   return (
@@ -162,7 +190,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         <fieldset disabled={editMode === 2}>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formProviderPidType">
-              <Form.Label>PID Type:</Form.Label>
+              <Form.Label>PID Type</Form.Label>
+              <span className="info-icon">
+                {" "}
+                i
+                <span className="info-text">
+                  {AddEditProviderInfo.type.info}
+                </span>
+              </span>
               <Form.Control
                 type="text"
                 placeholder="Enter PID Type"
@@ -172,7 +207,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
             </Form.Group>
 
             <Form.Group as={Col} controlId="formProviderName">
-              <Form.Label>Name:</Form.Label>
+              <Form.Label>Name</Form.Label>
+              <span className="info-icon">
+                {" "}
+                i
+                <span className="info-text">
+                  {AddEditProviderInfo.name.info}
+                </span>
+              </span>
               <Form.Control
                 type="text"
                 placeholder="Enter PID Name"
@@ -182,7 +224,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
             </Form.Group>
           </Row>
           <Form.Group className="mb-3" controlId="formProviderDescription">
-            <Form.Label>Description:</Form.Label>
+            <Form.Label>Description</Form.Label>
+            <span className="info-icon">
+              {" "}
+              i
+              <span className="info-text">
+                {AddEditProviderInfo.description.info}
+              </span>
+            </span>
             <Form.Control
               as="textarea"
               rows={2}
@@ -194,7 +243,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProviderRegexes">
-            <Form.Label>Regexes used for identification:</Form.Label>
+            <Form.Label>Regexes used for identification</Form.Label>
+            <span className="info-icon">
+              {" "}
+              i
+              <span className="info-text">
+                {AddEditProviderInfo.regexes.info}
+              </span>
+            </span>
             {info.regexes.map((item, index) => (
               <div className="mb-2 d-flex justify-content-between" key={index}>
                 <Form.Control
@@ -227,48 +283,89 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
               Add new regex
             </Button>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formProviderResolve">
+          <Form.Group className="mb-3" controlId="formProviderDois">
             <div className="mb-2">
-              <span>Select resolve modes that this provider supports:</span>
+              <span>Select if relies on DOIs</span>
+              <span className="info-icon">
+                {" "}
+                i
+                <span className="info-text">
+                  {AddEditProviderInfo.relies_on_dois.info}
+                </span>
+              </span>
             </div>
             <div className="ms-4">
               <Form.Check
                 inline
-                label="Landing Page"
-                name="formProviderResolve"
+                label="Relies on dois"
+                name="formProviderDois"
                 type="checkbox"
-                id="providerResolveLandingPage"
-                checked={hasResolution("landingpage")}
-                onChange={(e) => {
-                  handleCheckBoxChange("landingpage", e.target.checked);
-                }}
-              />
-              <Form.Check
-                inline
-                label="Metadata"
-                name="formProviderResolve"
-                type="checkbox"
-                id="providerResolveMetadata"
-                checked={hasResolution("metadata")}
-                onChange={(e) => {
-                  handleCheckBoxChange("metadata", e.target.checked);
-                }}
-              />
-              <Form.Check
-                inline
-                label="Resource"
-                name="formProviderResolve"
-                type="checkbox"
-                id="providerResolveResource"
-                checked={hasResolution("resource")}
-                onChange={(e) => {
-                  handleCheckBoxChange("resource", e.target.checked);
-                }}
+                id="providerResolveDois"
+                checked={info.relies_on_dois}
+                onChange={handleReliesOnDoisChange}
               />
             </div>
           </Form.Group>
+          <Form.Group className="mb-3" controlId="formProviderResolve">
+            <div className="mb-2">
+              <span>Select resolve modes that this provider supports</span>
+              <span className="info-icon">
+                {" "}
+                i
+                <span className="info-text">
+                  {AddEditProviderInfo.modes.info}
+                </span>
+              </span>
+            </div>
+            <div className="ms-4">
+              {["landingpage", "metadata", "resource"].map((mode) => (
+                <div key={mode} className="mb-2 row">
+                  <div className="col-2">
+                    <Form.Check
+                      inline
+                      label={mode.charAt(0).toUpperCase() + mode.slice(1)}
+                      name="formProviderResolve"
+                      type="checkbox"
+                      id={`providerResolve${
+                        mode.charAt(0).toUpperCase() + mode.slice(1)
+                      }`}
+                      checked={hasResolution(mode)}
+                      onChange={(e) => {
+                        handleCheckBoxChange(mode, e.target.checked);
+                      }}
+                      className="mb-3"
+                    />
+                  </div>
+                  {hasResolution(mode) && (
+                    <div className="col-10">
+                      <Form.Control
+                        type="text"
+                        placeholder={`Enter ${mode} endpoint url`}
+                        value={
+                          info.resolution_modes.find(
+                            (item) => item.mode === mode,
+                          )?.endpoint || ""
+                        }
+                        onChange={(e) =>
+                          handleEndpointChange(mode, e.target.value)
+                        }
+                        className="m-0"
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Form.Group>
           <Form.Group className="mb-3" controlId="formProviderExample">
-            <Form.Label>PID Example:</Form.Label>
+            <Form.Label>PID Example</Form.Label>
+            <span className="info-icon">
+              {" "}
+              i
+              <span className="info-text">
+                {AddEditProviderInfo.example.info}
+              </span>
+            </span>
             <Form.Control
               type="text"
               placeholder="Provide a valid PID as an example"

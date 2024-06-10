@@ -147,7 +147,10 @@ function RequestRolePromotion() {
           </span>
           <br />
           {pendingRequest.status === "REJECTED" ? (
-            <div>Please contact the following email <strong>pidmr@einfra.grnet.gr</strong> for more information!</div>
+            <div>
+              Please contact the following email{" "}
+              <strong>pidmr@einfra.grnet.gr</strong> for more information!
+            </div>
           ) : (
             ""
           )}

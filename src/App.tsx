@@ -7,7 +7,6 @@ import { FaBarcode } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaCube } from "react-icons/fa";
 import { AuthProvider, KeycloakLogout, ProtectedRoute } from "./auth";
-import Navigation from "./Navigation";
 import AddEditProvider from "./AddEditProvider";
 import UserRole from "./UserRole";
 import UserRoleRequests from "./UserRoleRequests";
@@ -15,6 +14,10 @@ import SupportedPids from "./SupportedPids";
 import ManagedPids from "./ManagedPids";
 import { Toaster } from "react-hot-toast";
 import { Footer } from "./Footer";
+import React from "react";
+import UsersTable from "./UsersTable";
+
+const Navigation = React.lazy(() => import("./Navigation"));
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
@@ -322,6 +325,15 @@ function App() {
               }
             >
               <Route index element={<UserRoleRequests />} />
+            </Route>
+
+            <Route
+              path="/users-table"
+              element={
+                <ProtectedRoute routeRoles={["admin", "provider_admin"]} />
+              }
+            >
+              <Route index element={<UsersTable />} />
             </Route>
             <Route path="/logout" element={<KeycloakLogout />} />
           </Routes>

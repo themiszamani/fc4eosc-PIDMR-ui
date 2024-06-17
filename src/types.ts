@@ -60,3 +60,11 @@ export type RoleChangeRequest = {
   updated_by: string;
   status: string;
 };
+
+export interface UserList {
+  id: string;
+  roles: string[];
+  name: string;
+  surname: string;
+  email: string;
+}

@@ -73,7 +73,7 @@ function Navigation() {
                   <FaCog className="me-2" />
                   Manage PIDs
                 </Dropdown.Item>
-                {hasRole("admin") || hasRole("provider_admin") ? (
+                {hasRole("admin") ? (
                   <>
                     <Dropdown.Item as={Link} to="/users-table">
                       <FaUsers className="me-2" />

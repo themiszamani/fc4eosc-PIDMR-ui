@@ -26,7 +26,6 @@ const UsersTable: React.FC = () => {
 
   const [requests, setRequests] = useState<UserList[]>([]);
   const [filterText, setFilterText] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
   const [filterType, setFilterType] = useState("");
   const { keycloak } = useContext(AuthContext)!;
 
@@ -85,7 +84,6 @@ const UsersTable: React.FC = () => {
   };
 
   const renderInitialCircle = (id: string) => {
-    const initial = id.charAt(0).toUpperCase();
     const color = idToColor(id);
     const style = {
       backgroundColor: color,
@@ -100,7 +98,11 @@ const UsersTable: React.FC = () => {
       fontWeight: "bold",
     };
 
-    return <div style={style}>{initial}</div>;
+    return (
+      <div style={style}>
+        <FaUser />
+      </div>
+    );
   };
 
   const renderRoleBadges = (roles: string[]) => {
@@ -119,23 +121,23 @@ const UsersTable: React.FC = () => {
 
   const columns: TableColumn<UserList>[] = [
     {
-      name: "Image",
-      cell: (row) => renderInitialCircle(row.id),
-    },
-    {
-      name: "ID",
-      selector: (row) => row.id,
-      sortable: true,
-    },
-    {
       name: "Name",
       selector: (row) => row.name,
+      cell: (row) => (
+        <>
+          <div className="m-1">{renderInitialCircle(row.id.toString())}</div>
+          <div>
+            <div>
+              {row.name} {row.surname}{" "}
+            </div>
+            <div style={{ color: "gray", fontSize: "12px" }}>
+              id: {row.id.length > 20 ? row.id.substring(0, 20) + ".." : row.id}
+            </div>
+          </div>
+        </>
+      ),
       sortable: true,
-    },
-    {
-      name: "Surname",
-      selector: (row) => row.surname,
-      sortable: true,
+      wrap: true,
     },
     { name: "Email", selector: (row) => row.email, sortable: true },
     {
@@ -147,7 +149,6 @@ const UsersTable: React.FC = () => {
 
   const handleClear = () => {
     setFilterText("");
-    setFilterStatus("");
     setFilterType("");
   };
 
@@ -157,6 +158,8 @@ const UsersTable: React.FC = () => {
         request.name.toLowerCase().includes(filterText.toLowerCase())) ||
       (request.email &&
         request.email.toLowerCase().includes(filterText.toLowerCase())) ||
+      (request.id &&
+        request.id.toLowerCase().includes(filterText.toLowerCase())) ||
       (request.roles &&
         request.roles
           .toString()
@@ -166,10 +169,9 @@ const UsersTable: React.FC = () => {
         request.surname.toLowerCase().includes(filterText.toLowerCase()));
 
     const matchesType = filterType
-      ? request.roles
-          .toString()
-          .toLowerCase()
-          .includes(filterType.toLowerCase())
+      ? request.roles.some(
+          (role) => role.toLowerCase() === filterType.toLowerCase(),
+        )
       : true;
 
     return matchesText && matchesType;
@@ -183,7 +185,7 @@ const UsersTable: React.FC = () => {
       </h5>
 
       <div className="row mb-3 mt-3">
-        <div className="col-3">
+        <div className="col-4">
           <Form.Select
             id="domainSelection"
             name="formSelectDomain"
@@ -191,38 +193,16 @@ const UsersTable: React.FC = () => {
             onChange={(e) => setFilterType(e.target.value)}
             value={filterType}
           >
-            <option value="">Select type</option>
+            <option value="">Select Role</option>
             <option key="admin" value="admin">
               Admin
             </option>
             <option key="provider_admin" value="provider_admin">
               Provider Admin
             </option>
-            <option key="user" value="user">
-              User
-            </option>
           </Form.Select>
         </div>
-        <div className="col-3">
-          <Form.Select
-            id="contactSelection"
-            name="formSelectContact"
-            aria-label="Contact Selection"
-            onChange={(e) => setFilterStatus(e.target.value)}
-            value={filterStatus}
-          >
-            <option id="All" value="">
-              Select status
-            </option>
-            <option key="approved" value="approved">
-              Approved
-            </option>
-            <option key="pending" value="pending">
-              Pending
-            </option>
-          </Form.Select>
-        </div>
-        <div className="col-5">
+        <div className="col-7">
           <Form.Control
             id="searchField"
             name="filterText"

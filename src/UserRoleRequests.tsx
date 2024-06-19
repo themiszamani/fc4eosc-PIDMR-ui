@@ -241,8 +241,8 @@ const RoleChangeRequestsTable: React.FC = () => {
     const matchesText =
       request.name.toLowerCase().includes(filterText.toLowerCase()) ||
       request.surname.toLowerCase().includes(filterText.toLowerCase()) ||
+      request.user_id.toLowerCase().includes(filterText.toLowerCase()) ||
       request.email.toLowerCase().includes(filterText.toLowerCase()) ||
-      request.role.toLowerCase().includes(filterText.toLowerCase()) ||
       request.description.toLowerCase().includes(filterText.toLowerCase());
 
     const matchesStatus = filterStatus

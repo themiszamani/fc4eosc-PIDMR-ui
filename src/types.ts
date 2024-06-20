@@ -1,5 +1,6 @@
 // Types for supported PIDS view
 export type ApiResponse = {
+  size: unknown;
   size_of_page: number;
   number_of_page: number;
   total_elements: number;
@@ -26,7 +27,7 @@ export type Provider = {
   relies_on_dois: boolean;
   resolution_modes: ResolutionMode[];
   regexes: string[];
-  status?: string;
+  status?: string | null;
   example?: string;
   user_id: string | null;
 };

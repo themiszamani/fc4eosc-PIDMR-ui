@@ -254,7 +254,13 @@ const ManagedPids = () => {
     {
       name: "Description",
       selector: (row) => row.description,
-      cell: (row) => <div className="m-1">{ row.description.length >100 ? row.description.substring(0, 100)+"..." : row.description }</div>,
+      cell: (row) => (
+        <div className="m-1">
+          {row.description.length > 100
+            ? row.description.substring(0, 100) + "..."
+            : row.description}
+        </div>
+      ),
       wrap: true,
       width: "500px",
     },

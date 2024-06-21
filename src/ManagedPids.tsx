@@ -344,7 +344,7 @@ const ManagedPids = () => {
         {(admin || providerAdmin) && (
           <div className="mb-2">
             <Link className="btn-outline-dark btn" to="/managed-pids/add">
-              <FaPlusCircle /> Add new PID provider
+              <FaPlusCircle /> Add new PID types
             </Link>
           </div>
         )}
@@ -363,9 +363,9 @@ const ManagedPids = () => {
           <div className="d-flex align-items-center">
             <FaExclamationTriangle size={40} />
             <div className="ms-3">
-              <strong>No Providers!</strong>
+              <strong>No types!</strong>
               <br />
-              It seems there are no PID Providers yet.
+              It seems there are no PID types yet.
             </div>
           </div>
         </Alert>

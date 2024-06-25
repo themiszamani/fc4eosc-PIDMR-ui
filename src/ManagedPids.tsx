@@ -12,7 +12,7 @@ import {
   FaTrashAlt,
 } from "react-icons/fa";
 import { ApiResponse, Provider } from "./types";
-import { Alert, Button, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Alert, Button, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { DeleteModal } from "./DeleteModal";
 import toast from "react-hot-toast";
@@ -62,10 +62,11 @@ const ManagedPids = () => {
   const { roles, userid } = useContext(AuthContext)!;
   const admin = roles.includes("admin");
   const providerAdmin = roles.includes("provider_admin");
-
   const [data, setData] = useState<Provider[]>([]);
   const [triggerFetch, setTriggerFetch] = useState(true);
   const [searchParams] = useSearchParams();
+  const [filterText, setFilterText] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
 
   const { keycloak } = useContext(AuthContext)!;
 
@@ -329,6 +330,25 @@ const ManagedPids = () => {
     },
   ];
 
+  const handleClear = () => {
+    setFilterText("");
+    setFilterStatus("");
+  };
+
+  const filteredData = data.filter((request) => {
+    const matchesText =
+      (request.name &&
+        request.name.toLowerCase().includes(filterText.toLowerCase())) ||
+      (request.description &&
+        request.description.toLowerCase().includes(filterText.toLowerCase()));
+
+    const matchesType =
+      request.status &&
+      request.status.toLowerCase().includes(filterStatus.toLowerCase());
+
+    return matchesText && matchesType;
+  });
+
   return (
     <>
       <Alert variant="success" className="mt-2">
@@ -349,10 +369,51 @@ const ManagedPids = () => {
           </div>
         )}
       </div>
+
+      <div className="row mb-3 mt-3">
+        <div className="col-4">
+          <Form.Select
+            id="domainSelection"
+            name="formSelectDomain"
+            aria-label="Domain Selection"
+            onChange={(e) => setFilterStatus(e.target.value)}
+            value={filterStatus}
+          >
+            <option value="">Select Status</option>
+            <option key="approved" value="approved">
+              Approved
+            </option>
+            <option key="pending" value="pending">
+              Pending
+            </option>
+          </Form.Select>
+        </div>
+        <div className="col-7">
+          <Form.Control
+            id="searchField"
+            name="filterText"
+            aria-label="Input for searching the list"
+            placeholder="Search ..."
+            value={filterText}
+            aria-describedby="button-addon2"
+            onChange={(e) => setFilterText(e.target.value)}
+          />
+        </div>
+        <div className="col-1">
+          <Button
+            variant="outline-primary"
+            id="button-addon2"
+            onClick={handleClear}
+          >
+            Clear
+          </Button>
+        </div>
+      </div>
+
       {data && data.length > 0 ? (
         <DataTable
           columns={columns}
-          data={data}
+          data={filteredData}
           defaultSortFieldId={1}
           theme="default"
           customStyles={customStyles}

@@ -27,7 +27,7 @@ export type Provider = {
   relies_on_dois: boolean;
   resolution_modes: ResolutionMode[];
   regexes: string[];
-  status?: string | null;
+  status?: string;
   example?: string;
   user_id: string | null;
 };

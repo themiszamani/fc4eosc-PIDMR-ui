@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 import { Footer } from "./Footer";
 import React from "react";
 import UsersTable from "./UsersTable";
+import UserRoleGuide from "./UserRoleGuide";
 
 const Navigation = React.lazy(() => import("./Navigation"));
 
@@ -327,7 +328,7 @@ function App() {
             >
               <Route index element={<UserRoleRequests />} />
             </Route>
-
+            <Route path="/user-role-guide" element={<UserRoleGuide />} />
             <Route
               path="/users-table"
               element={

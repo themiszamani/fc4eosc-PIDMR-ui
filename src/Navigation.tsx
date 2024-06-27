@@ -54,6 +54,9 @@ function Navigation() {
           <Nav.Link as={Link} to="/supported-pids">
             <strong>Supported PIDs</strong>
           </Nav.Link>
+          <Nav.Link as={Link} to="/user-role-guide">
+            <strong>Provider Guide</strong>
+          </Nav.Link>
         </Nav>
         {/* login button */}
         {!authenticated && (

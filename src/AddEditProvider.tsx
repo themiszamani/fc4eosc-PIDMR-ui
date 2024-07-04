@@ -1,4 +1,4 @@
-import { Badge, Button, Col, Form, Row } from "react-bootstrap";
+import { Badge, Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { FaEdit, FaInfoCircle, FaPlusCircle } from "react-icons/fa";
 import { AuthContext } from "./auth";
 import { useContext, useEffect, useState } from "react";
@@ -12,13 +12,24 @@ const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const PROVIDERS_ADMIN_API_ROUTE = `${PIDMR_API}/v2/admin/providers`;
 const PROVIDERS_ADMIN_API_ROUTE_V1 = `${PIDMR_API}/v1/admin/providers`;
 
+interface DeleteModalConfig {
+  show: boolean;
+  title: string;
+  message: string;
+  itemId: string;
+  itemName: string;
+}
+
 function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
   const navigate = useNavigate();
   const params = useParams();
+  const [thisID, setThisID] = useState<string | undefined>();
 
   const { keycloak } = useContext(AuthContext)!;
 
   const [info, setInfo] = useState<ProviderInput>({
+    user_id: "",
+    status: "",
     type: "",
     name: "",
     description: "",
@@ -27,6 +38,16 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     resolution_modes: [],
     regexes: [""],
   });
+
+  const [deleteModalConfig, setDeleteModalConfig] = useState<DeleteModalConfig>(
+    {
+      show: false,
+      title: "Delete PID Provider",
+      message: "Are you sure you want to delete the following PID Provider ",
+      itemId: "",
+      itemName: "",
+    },
+  );
 
   const handleRegexChange = (index: number, value: string) => {
     const updatedInfo = { ...info };
@@ -82,6 +103,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
 
     if (editMode && params.id) {
       handleGet(params.id);
+      setThisID(params.id);
     }
   }, [editMode, keycloak, params.id]);
 
@@ -162,6 +184,68 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     setInfo({ ...info, relies_on_dois: e.target.checked });
   };
 
+  const handleDeleteOpenModal = (
+    infoID: string | undefined,
+    infoName: string,
+  ) => {
+    if (infoID) {
+      setDeleteModalConfig({
+        ...deleteModalConfig,
+        show: true,
+        itemId: infoID,
+        itemName: infoName,
+      });
+    } else {
+      toast.error("Invalid ID for deletion.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (keycloak) {
+      try {
+        const response = await fetch(
+          `${PROVIDERS_ADMIN_API_ROUTE_V1}/${deleteModalConfig.itemId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${keycloak.token}`,
+            },
+          },
+        );
+
+        if (response.ok) {
+          setDeleteModalConfig({
+            ...deleteModalConfig,
+            show: false,
+          });
+          navigate("/managed-pids");
+          toast.success("Provider deleted successfully!");
+        } else {
+          response.json().then((data) => {
+            toast.error(
+              <div>
+                <strong>Error trying to delete Provider:</strong>
+                <br />
+                <span>{data.message}</span>
+              </div>,
+            );
+          });
+        }
+      } catch (error: unknown) {
+        toast.error("Error while trying to delete provider");
+        console.error("Error:", error);
+      }
+    }
+  };
+
+  const handleDeleteCloseModal = () => {
+    setDeleteModalConfig({
+      ...deleteModalConfig,
+      show: false,
+    });
+  };
+
   return (
     <div className="mt-4">
       {editMode == 1 ? (
@@ -179,14 +263,54 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         </h5>
       ) : (
         <h5>
-          <FaInfoCircle className="me-2" /> Provider Details{" "}
-          <Badge className="ms-2" bg="dark">
+          <FaInfoCircle className="me-2" /> Provider Details <br />
+          <Badge className="mt-2" bg="dark">
             {" "}
             id: {params.id}{" "}
           </Badge>
+          {info.status === "APPROVED" ? (
+            <>
+              <Badge className="ms-2" bg="success">
+                {" "}
+                Status: Approved
+              </Badge>
+              <Badge className="ms-2" bg="success">
+                {" "}
+                Approved By: {info.user_id}
+              </Badge>
+            </>
+          ) : (
+            <Badge className="ms-2" bg="warning">
+              {" "}
+              Status: Pending
+            </Badge>
+          )}
         </h5>
       )}
-      <Form className="mt-4">
+
+      <Form>
+        {editMode == 2 ? (
+          <div className="d-flex justify-content-end">
+            <Button
+              className="me-1"
+              variant="outline-success"
+              onClick={() =>
+                (window.location.href = `/managed-pids/edit/${params.id}`)
+              }
+            >
+              Edit PID
+            </Button>
+            <Button
+              className="me-1"
+              variant="outline-danger"
+              onClick={() => handleDeleteOpenModal(thisID, info.name)}
+            >
+              Delete PID
+            </Button>
+          </div>
+        ) : (
+          ""
+        )}
         <fieldset disabled={editMode === 2}>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formProviderPidType">
@@ -383,6 +507,24 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           {editMode === 2 ? "Back" : "Cancel"}
         </Link>
       </Form>
+
+      <Modal show={deleteModalConfig.show} onHide={handleDeleteCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>{deleteModalConfig.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {deleteModalConfig.message}{" "}
+          <strong>{deleteModalConfig.itemName}</strong>?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleDeleteCloseModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

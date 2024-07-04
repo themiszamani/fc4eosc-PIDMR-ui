@@ -27,7 +27,7 @@ export type Provider = {
   relies_on_dois: boolean;
   resolution_modes: ResolutionMode[];
   regexes: string[];
-  status?: string;
+  status: string;
   example?: string;
   user_id: string | null;
 };
@@ -39,6 +39,8 @@ export type ResolutionMode = {
 };
 
 export type ProviderInput = {
+  user_id: string | null;
+  status: string;
   type: string;
   name: string;
   description: string;

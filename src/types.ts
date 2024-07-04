@@ -39,6 +39,7 @@ export type ResolutionMode = {
 };
 
 export type ProviderInput = {
+  user_id: string | null;
   status: string;
   type: string;
   name: string;

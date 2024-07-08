@@ -322,7 +322,7 @@ const ManagedPids = () => {
               size="sm"
               onClick={() => handleApproveOpenModal(row)}
             >
-              {row.status === "APPROVED" ? <FaCheck /> : <FaCog />}
+              {row.status === "APPROVED" ? <FaCog /> : <FaCheck />}
             </Button>
           </OverlayTrigger>
         </div>
@@ -414,7 +414,8 @@ const ManagedPids = () => {
         <DataTable
           columns={columns}
           data={filteredData}
-          defaultSortFieldId={1}
+          defaultSortFieldId={4}
+          defaultSortAsc={false}
           theme="default"
           customStyles={customStyles}
           pagination

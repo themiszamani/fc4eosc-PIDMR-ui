@@ -57,7 +57,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${keycloak.token}`,
               },
-            }
+            },
           );
 
           if (response.ok) {
@@ -106,7 +106,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         if (response.ok) {
           navigate("/managed-pids");
           toast.success(
-            `Provider ${editMode ? "updated" : "added"} successfully!`
+            `Provider ${editMode ? "updated" : "added"} successfully!`,
           );
         } else {
           response.json().then((data) => {
@@ -117,7 +117,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                 } Provider:`}</strong>
                 <br />
                 <span>{data.message}</span>
-              </div>
+              </div>,
             );
           });
         }
@@ -145,7 +145,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
       setInfo({
         ...info,
         resolution_modes: info.resolution_modes.filter(
-          (item) => item.mode !== mode
+          (item) => item.mode !== mode,
         ),
       });
     }
@@ -161,10 +161,10 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         ? {
             ...item,
             endpoints: item.endpoints.map((ep, i) =>
-              i === index ? value : ep
+              i === index ? value : ep,
             ),
           }
-        : item
+        : item,
     );
     setInfo({ ...info, resolution_modes: updatedModes });
   };
@@ -173,7 +173,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     const updatedModes = info.resolution_modes.map((item) =>
       item.mode === mode
         ? { ...item, endpoints: [...item.endpoints, ""] }
-        : item
+        : item,
     );
     setInfo({ ...info, resolution_modes: updatedModes });
   };
@@ -355,9 +355,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                   id={`resolution_${mode}`}
                   label={mode}
                   checked={hasResolution(mode)}
-                  onChange={(e) =>
-                    handleCheckBoxChange(mode, e.target.checked)
-                  }
+                  onChange={(e) => handleCheckBoxChange(mode, e.target.checked)}
                 />
                 {hasResolution(mode) && (
                   <>
@@ -373,7 +371,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                                 handleEndpointChange(
                                   mode,
                                   index,
-                                  e.target.value
+                                  e.target.value,
                                 )
                               }
                             />

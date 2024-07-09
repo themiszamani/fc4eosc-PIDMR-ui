@@ -1,4 +1,4 @@
-import { Badge, Button, Col, Form, Modal, Row } from "react-bootstrap";
+import { Badge, Button, Col, Form, Row } from "react-bootstrap";
 import { FaEdit, FaInfoCircle, FaPlusCircle } from "react-icons/fa";
 import { AuthContext } from "./auth";
 import { useContext, useEffect, useState } from "react";
@@ -12,24 +12,13 @@ const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const PROVIDERS_ADMIN_API_ROUTE = `${PIDMR_API}/v2/admin/providers`;
 const PROVIDERS_ADMIN_API_ROUTE_V1 = `${PIDMR_API}/v1/admin/providers`;
 
-interface DeleteModalConfig {
-  show: boolean;
-  title: string;
-  message: string;
-  itemId: string;
-  itemName: string;
-}
-
 function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
   const navigate = useNavigate();
   const params = useParams();
-  const [thisID, setThisID] = useState<string | undefined>();
 
   const { keycloak } = useContext(AuthContext)!;
 
   const [info, setInfo] = useState<ProviderInput>({
-    user_id: "",
-    status: "",
     type: "",
     name: "",
     description: "",
@@ -38,16 +27,6 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     resolution_modes: [],
     regexes: [""],
   });
-
-  const [deleteModalConfig, setDeleteModalConfig] = useState<DeleteModalConfig>(
-    {
-      show: false,
-      title: "Delete PID Provider",
-      message: "Are you sure you want to delete the following PID Provider ",
-      itemId: "",
-      itemName: "",
-    },
-  );
 
   const handleRegexChange = (index: number, value: string) => {
     const updatedInfo = { ...info };
@@ -71,14 +50,14 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
       if (keycloak) {
         try {
           const response = await fetch(
-            PROVIDERS_ADMIN_API_ROUTE_V1 + "/" + id,
+            `${PROVIDERS_ADMIN_API_ROUTE_V1}/${id}`,
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${keycloak.token}`,
               },
-            },
+            }
           );
 
           if (response.ok) {
@@ -88,7 +67,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
               resolution_modes: responseData.resolution_modes.map((item) => ({
                 name: item.name,
                 mode: item.mode,
-                endpoint: item.endpoint || "",
+                endpoints: item.endpoints || [],
               })),
             };
             console.log(loadedInfo);
@@ -103,7 +82,6 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
 
     if (editMode && params.id) {
       handleGet(params.id);
-      setThisID(params.id);
     }
   }, [editMode, keycloak, params.id]);
 
@@ -113,7 +91,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
 
       const method = editMode ? "PATCH" : "POST";
       const url = editMode
-        ? PROVIDERS_ADMIN_API_ROUTE + "/" + params.id
+        ? `${PROVIDERS_ADMIN_API_ROUTE}/${params.id}`
         : PROVIDERS_ADMIN_API_ROUTE;
       try {
         const response = await fetch(url, {
@@ -128,7 +106,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         if (response.ok) {
           navigate("/managed-pids");
           toast.success(
-            `Provider ${editMode ? "updated" : "added"} successfully!`,
+            `Provider ${editMode ? "updated" : "added"} successfully!`
           );
         } else {
           response.json().then((data) => {
@@ -139,7 +117,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                 } Provider:`}</strong>
                 <br />
                 <span>{data.message}</span>
-              </div>,
+              </div>
             );
           });
         }
@@ -160,90 +138,55 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         ...info,
         resolution_modes: [
           ...info.resolution_modes,
-          { name: "", mode, endpoint: "" },
+          { name: "", mode, endpoints: [""] },
         ],
       });
     } else {
       setInfo({
         ...info,
         resolution_modes: info.resolution_modes.filter(
-          (item) => item.mode !== mode,
+          (item) => item.mode !== mode
         ),
       });
     }
-  };
-
-  const handleEndpointChange = (mode: string, endpoint: string) => {
-    const updatedModes = info.resolution_modes.map((item) =>
-      item.mode === mode ? { ...item, endpoint } : item,
-    );
-    setInfo({ ...info, resolution_modes: updatedModes });
   };
 
   const handleReliesOnDoisChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInfo({ ...info, relies_on_dois: e.target.checked });
   };
 
-  const handleDeleteOpenModal = (
-    infoID: string | undefined,
-    infoName: string,
-  ) => {
-    if (infoID) {
-      setDeleteModalConfig({
-        ...deleteModalConfig,
-        show: true,
-        itemId: infoID,
-        itemName: infoName,
-      });
-    } else {
-      toast.error("Invalid ID for deletion.");
-    }
+  const handleEndpointChange = (mode: string, index: number, value: string) => {
+    const updatedModes = info.resolution_modes.map((item) =>
+      item.mode === mode
+        ? {
+            ...item,
+            endpoints: item.endpoints.map((ep, i) =>
+              i === index ? value : ep
+            ),
+          }
+        : item
+    );
+    setInfo({ ...info, resolution_modes: updatedModes });
   };
 
-  const handleDelete = async () => {
-    if (keycloak) {
-      try {
-        const response = await fetch(
-          `${PROVIDERS_ADMIN_API_ROUTE_V1}/${deleteModalConfig.itemId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${keycloak.token}`,
-            },
-          },
-        );
+  const handleAddEndpoint = (mode: string) => {
+    const updatedModes = info.resolution_modes.map((item) =>
+      item.mode === mode
+        ? { ...item, endpoints: [...item.endpoints, ""] }
+        : item
+    );
+    setInfo({ ...info, resolution_modes: updatedModes });
+  };
 
-        if (response.ok) {
-          setDeleteModalConfig({
-            ...deleteModalConfig,
-            show: false,
-          });
-          navigate("/managed-pids");
-          toast.success("Provider deleted successfully!");
-        } else {
-          response.json().then((data) => {
-            toast.error(
-              <div>
-                <strong>Error trying to delete Provider:</strong>
-                <br />
-                <span>{data.message}</span>
-              </div>,
-            );
-          });
-        }
-      } catch (error: unknown) {
-        toast.error("Error while trying to delete provider");
-        console.error("Error:", error);
+  const handleRemoveEndpoint = (mode: string, index: number) => {
+    const updatedModes = info.resolution_modes.map((item) => {
+      if (item.mode === mode) {
+        const newEndpoints = item.endpoints.filter((_, i) => i !== index);
+        return { ...item, endpoints: newEndpoints };
       }
-    }
-  };
-
-  const handleDeleteCloseModal = () => {
-    setDeleteModalConfig({
-      ...deleteModalConfig,
-      show: false,
+      return item;
     });
+    setInfo({ ...info, resolution_modes: updatedModes });
   };
 
   return (
@@ -263,54 +206,15 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         </h5>
       ) : (
         <h5>
-          <FaInfoCircle className="me-2" /> Provider Details <br />
-          <Badge className="mt-2" bg="dark">
+          <FaInfoCircle className="me-2" /> Provider Details{" "}
+          <Badge className="ms-2" bg="dark">
             {" "}
             id: {params.id}{" "}
           </Badge>
-          {info.status === "APPROVED" ? (
-            <>
-              <Badge className="ms-2" bg="success">
-                {" "}
-                Status: Approved
-              </Badge>
-              <Badge className="ms-2" bg="success">
-                {" "}
-                Approved By: {info.user_id}
-              </Badge>
-            </>
-          ) : (
-            <Badge className="ms-2" bg="warning">
-              {" "}
-              Status: Pending
-            </Badge>
-          )}
         </h5>
       )}
 
-      <Form>
-        {editMode == 2 ? (
-          <div className="d-flex justify-content-end">
-            <Button
-              className="me-1"
-              variant="outline-success"
-              onClick={() =>
-                (window.location.href = `/managed-pids/edit/${params.id}`)
-              }
-            >
-              Edit PID
-            </Button>
-            <Button
-              className="me-1"
-              variant="outline-danger"
-              onClick={() => handleDeleteOpenModal(thisID, info.name)}
-            >
-              Delete PID
-            </Button>
-          </div>
-        ) : (
-          ""
-        )}
+      <Form className="mt-4">
         <fieldset disabled={editMode === 2}>
           <Row className="mb-3">
             <Form.Group as={Col} controlId="formProviderPidType">
@@ -366,7 +270,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
               value={info.description}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formProviderRegexes">
+          <Form.Group className="mb-3" controlId="formProviderRegex">
             <Form.Label>Regexes used for identification</Form.Label>
             <span className="info-icon">
               {" "}
@@ -376,35 +280,38 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
               </span>
             </span>
             {info.regexes.map((item, index) => (
-              <div className="mb-2 d-flex justify-content-between" key={index}>
-                <Form.Control
-                  type="text"
-                  name={`formProviderRegex_${index}`}
-                  value={item}
-                  onChange={(e) => {
-                    handleRegexChange(index, e.target.value);
-                  }}
-                />
-                <Button
-                  className="ms-2"
-                  size="sm"
-                  variant="outline-danger"
-                  onClick={() => {
-                    handleRegexRemove(index);
-                  }}
-                >
-                  Delete
-                </Button>
-              </div>
+              <Row key={`regexes_${index}`} className="mt-1">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    name={`formProviderRegex_${index}`}
+                    value={item}
+                    onChange={(e) => {
+                      handleRegexChange(index, e.target.value);
+                    }}
+                  />
+                </Col>
+                <Col xs="auto">
+                  <Button
+                    className="ms-2"
+                    variant="outline-danger"
+                    onClick={() => {
+                      handleRegexRemove(index);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Col>
+              </Row>
             ))}
 
             <Button
-              className="d-block"
-              variant="outline-dark"
+              className="d-block mt-1 mb-1"
+              variant="outline-success"
               size="sm"
               onClick={handleRegexAdd}
             >
-              Add new regex
+              Add regex
             </Button>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formProviderDois">
@@ -418,7 +325,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                 </span>
               </span>
             </div>
-            <div className="ms-4">
+            <div>
               <Form.Check
                 inline
                 label="Relies on dois"
@@ -430,7 +337,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
               />
             </div>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formProviderResolve">
+          <Form.Group className="mt-2">
             <div className="mb-2">
               <span>Select resolve modes that this provider supports</span>
               <span className="info-icon">
@@ -441,47 +348,60 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                 </span>
               </span>
             </div>
-            <div className="ms-4">
-              {["landingpage", "metadata", "resource"].map((mode) => (
-                <div key={mode} className="mb-2 row">
-                  <div className="col-2">
-                    <Form.Check
-                      inline
-                      label={mode.charAt(0).toUpperCase() + mode.slice(1)}
-                      name="formProviderResolve"
-                      type="checkbox"
-                      id={`providerResolve${
-                        mode.charAt(0).toUpperCase() + mode.slice(1)
-                      }`}
-                      checked={hasResolution(mode)}
-                      onChange={(e) => {
-                        handleCheckBoxChange(mode, e.target.checked);
-                      }}
-                      className="mb-3"
-                    />
-                  </div>
-                  {hasResolution(mode) && (
-                    <div className="col-10">
-                      <Form.Control
-                        type="text"
-                        placeholder={`Enter ${mode} endpoint url`}
-                        value={
-                          info.resolution_modes.find(
-                            (item) => item.mode === mode,
-                          )?.endpoint || ""
-                        }
-                        onChange={(e) =>
-                          handleEndpointChange(mode, e.target.value)
-                        }
-                        className="m-0"
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            {["landingpage", "metadata", "resource"].map((mode) => (
+              <div key={mode}>
+                <Form.Check
+                  type="checkbox"
+                  id={`resolution_${mode}`}
+                  label={mode}
+                  checked={hasResolution(mode)}
+                  onChange={(e) =>
+                    handleCheckBoxChange(mode, e.target.checked)
+                  }
+                />
+                {hasResolution(mode) && (
+                  <>
+                    {info.resolution_modes
+                      .find((item) => item.mode === mode)
+                      ?.endpoints.map((endpoint, index) => (
+                        <Row key={`${mode}_endpoint_${index}`} className="mt-1">
+                          <Col>
+                            <Form.Control
+                              type="text"
+                              value={endpoint}
+                              onChange={(e) =>
+                                handleEndpointChange(
+                                  mode,
+                                  index,
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </Col>
+                          <Col xs="auto">
+                            <Button
+                              variant="outline-danger"
+                              onClick={() => handleRemoveEndpoint(mode, index)}
+                            >
+                              Delete
+                            </Button>
+                          </Col>
+                        </Row>
+                      ))}
+                    <Button
+                      variant="outline-success"
+                      onClick={() => handleAddEndpoint(mode)}
+                      className="mt-1 mb-1"
+                      size="sm"
+                    >
+                      Add endpoint
+                    </Button>
+                  </>
+                )}
+              </div>
+            ))}
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formProviderExample">
+          <Form.Group className="mt-3 mb-3" controlId="formProviderExample">
             <Form.Label>PID Example</Form.Label>
             <span className="info-icon">
               {" "}
@@ -507,24 +427,6 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
           {editMode === 2 ? "Back" : "Cancel"}
         </Link>
       </Form>
-
-      <Modal show={deleteModalConfig.show} onHide={handleDeleteCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>{deleteModalConfig.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {deleteModalConfig.message}{" "}
-          <strong>{deleteModalConfig.itemName}</strong>?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleDeleteCloseModal}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 }

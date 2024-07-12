@@ -185,7 +185,7 @@ function Main() {
                         }`}
                         href={generateResolveURL(
                           mode.mode as ResolutionModes,
-                          result.example,
+                          pid,
                         )}
                         target="_blank"
                         rel="noreferrer"

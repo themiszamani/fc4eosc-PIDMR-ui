@@ -61,9 +61,9 @@ function SupportedPids() {
   // prep the page navigation element
   let pageNav = null;
   // prep the element that holds the page next, prev controls
-  let pageFlip = null;
+  let pageFlip = <div></div>;
 
-  const pageSize = parseInt(searchParams.get("size") || "");
+  const pageSize = parseInt(searchParams.get("size") || "20");
 
   // if data is fetched and content exists do
   if (data && data.content) {

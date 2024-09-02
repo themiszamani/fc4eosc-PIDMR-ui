@@ -77,7 +77,9 @@ function generateResolveURL(
   resolutionMode: ResolutionModes,
   pid: string,
 ): string {
-  return `${RESOLVE_API_ROUTE}?pidMode=${resolutionMode}&redirect=true&pid=${pid}`;
+  return `${RESOLVE_API_ROUTE}?pidMode=${resolutionMode}&redirect=true&pid=${encodeURIComponent(
+    pid,
+  )}`;
 }
 
 // Provide an initial state object for the ui
@@ -102,7 +104,9 @@ function Main() {
       if (pid) {
         try {
           // Make a request to your backend API
-          const response = await fetch(`${IDENTIFY_API_ROUTE}?text=${pid}`);
+          const response = await fetch(
+            `${IDENTIFY_API_ROUTE}?text=${encodeURIComponent(pid)}`,
+          );
           if (!response.ok) {
             throw new Error("Failed to fetch data");
           }

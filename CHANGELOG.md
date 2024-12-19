@@ -2,6 +2,32 @@
 
 All notable changes in FC4E-CAT-UI project are documented here
 
+## [v1.3.0](https://github.com/FC4E-CAT/fc4e-cat-ui/releases/tag/v1.3.0) (2024-12-19)
+
+### Added:
+
+- [PIDMR-170] - Implement Admin User Retrieval API Endpoint in UI ([#45](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/45))
+- [PIDMR-171] - Implement Admin Users Request Role Change API Endpoint in UI ([#46](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/46))
+- [PIDMR-171] - Implement Admin Users Request Role Change API Endpoint in UI ([#48](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/48))
+- [PIDMR-170] - Implement Admin User Retrieval API Endpoint in UI ([#49](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/49))
+- [PIDMR-184] - A static with the steps for providers ([#53](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/53))
+- [PIDMR-186] - Action buttons on top of view page ([#54](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/54))
+- [PIDMR-187] - Actions in managed pid lists ([#55](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/55))
+- [PIDMR-185] - Update UI to support a list of possible matches ([#57](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/57))
+- [PIDMR-182] - Multiple endpoints in the Provider model ([#56](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/56))
+
+### Changed:
+
+- [PIDMR-177] - Remove Assigned Role on Rejected Role Change Request by Admin ([#47](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/47))
+- [PIDMR-179] - Change list of providers to table layout ([#50](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/50))
+- [PIDMR-179] - Change list of providers to table layout ([#51](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/51))
+- [PIDMR-179] - Change list of providers to table layout ([#52](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/52))
+- PIDMR-195 Encode url query parameters when contacting backend ([#61](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/61))
+
+### Fixed:
+
+- PIDMR-193 Fix pagination issue in supported pids ([#60](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/60))
+
 ## [v1.2.0](https://github.com/FC4E-CAT/fc4e-cat-ui/releases/tag/v1.2.0) (2024-06-10)
 
 ### Added:

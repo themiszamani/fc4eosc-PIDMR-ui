@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, MouseEvent, useMemo } from "react";
+import { useState, useEffect, ChangeEvent, MouseEvent } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import { Container, Navbar } from "react-bootstrap";
 
@@ -7,7 +7,7 @@ import { FaBarcode } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaCube } from "react-icons/fa";
 import { AuthProvider, KeycloakLogout, ProtectedRoute } from "./auth";
-import Navigation from "./Navigation";
+// import Navigation from "./Navigation";
 import AddEditProvider from "./AddEditProvider";
 import UserRole from "./UserRole";
 import UserRoleRequests from "./UserRoleRequests";
@@ -15,13 +15,18 @@ import SupportedPids from "./SupportedPids";
 import ManagedPids from "./ManagedPids";
 import { Toaster } from "react-hot-toast";
 import { Footer } from "./Footer";
+import React from "react";
+import UsersTable from "./UsersTable";
+import UserRoleGuide from "./UserRoleGuide";
+
+const Navigation = React.lazy(() => import("./Navigation"));
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 // Backend references used in resolving stuff
 const RESOLVE_API_ROUTE = `${PIDMR_API}/v1/metaresolvers/resolve`;
 // Backend references used in resolving stuff
-const IDENTIFY_API_ROUTE = `${PIDMR_API}/v1/providers/identify`;
+const IDENTIFY_API_ROUTE = `${PIDMR_API}/v2/providers/identify`;
 // default debounce input timeout at 300 ms
 const DEBOUNCE_TIMEOUT = 300;
 
@@ -55,28 +60,37 @@ type IdResponseResolutionMode = {
   name: string;
 };
 
+// Fixed order for resolution modes buttons
+const button_order = ["landingpage", "metadata", "resource"];
+
+// Sorting function based on fixed order
+function sortResolutionModes(
+  modes: IdResponseResolutionMode[],
+): IdResponseResolutionMode[] {
+  return modes.sort(
+    (a, b) => button_order.indexOf(a.mode) - button_order.indexOf(b.mode),
+  );
+}
+
 // generate resolve urls given resolve mode and pid
 function generateResolveURL(
   resolutionMode: ResolutionModes,
   pid: string,
 ): string {
-  return `${RESOLVE_API_ROUTE}?pidMode=${resolutionMode}&redirect=true&pid=${pid}`;
+  return `${RESOLVE_API_ROUTE}?pidMode=${resolutionMode}&redirect=true&pid=${encodeURIComponent(
+    pid,
+  )}`;
 }
 
 // Provide an initial state object for the ui
-function initResult(): IdResponse {
-  return {
-    type: "",
-    status: IdStatus.None,
-    example: "",
-    resolution_modes: [],
-  };
+function initResult(): IdResponse[] {
+  return [];
 }
 
 // Component to render the metaresolver page
 function Main() {
   const [pid, setPid] = useState("");
-  const [result, setResult] = useState(initResult());
+  const [results, setResults] = useState(initResult());
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const pid = event.target.value.trim();
@@ -90,21 +104,23 @@ function Main() {
       if (pid) {
         try {
           // Make a request to your backend API
-          const response = await fetch(`${IDENTIFY_API_ROUTE}?text=${pid}`);
+          const response = await fetch(
+            `${IDENTIFY_API_ROUTE}?text=${encodeURIComponent(pid)}`,
+          );
           if (!response.ok) {
             throw new Error("Failed to fetch data");
           }
           // Assuming the response is in JSON format
-          const data: IdResponse = await response.json();
+          const data: IdResponse[] = await response.json();
           // Update state with the fetched data
-          setResult(data);
+          setResults(data);
         } catch (error) {
           console.log(error);
         } finally {
           console.log("done");
         }
       } else {
-        setResult(initResult());
+        setResults(initResult());
       }
     }, DEBOUNCE_TIMEOUT);
 
@@ -117,116 +133,87 @@ function Main() {
     setPid(pid || "");
   }
 
-  // Handle tooltip message
-  let tooltip = null;
-  const resolutionModes: string[] = useMemo(() => {
-    return result.resolution_modes.map((x) => x.mode);
-  }, [result.resolution_modes]);
-  // if pid empty prompt user to enter something
-  if (result.type === "") {
-    tooltip = (
-      <div style={{ color: "grey" }}>
-        <strong>Please enter a valid Pid</strong>
-        <br />
-        <em>
-          supported pids: ark, arXiv, swh, doi, urn:nbn{" "}
-          <Link to="/supported-pids"> and more...</Link>
-        </em>
-      </div>
-    );
-  } else {
-    tooltip = (
-      <div>
-        <strong>Format: </strong>
-        <span>{result.type + " "}</span>
-        <span className="mx-2">-</span>
-        <strong>Valid:</strong>
-        <span>{result.status === IdStatus.Valid ? "✅" : "❌"}</span>
-        <br />
-        {result.status === IdStatus.Incomplete && (
-          <em style={{ color: "grey" }}>
-            {"example: "}
-            <span
-              className="fillin"
-              data-example={result.example}
-              onClick={(event) => {
-                handleGrabEg(event);
-              }}
-            >
-              {result.example}
-            </span>
-          </em>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div className="page-center">
       <div className="resolve-panel">
-        {/* Intro icons and text */}
         <h1 className="text-large">🏷️ ➜ 📦</h1>
         <p>
           The FC4EOSC Metaresolver resolves individual handles from various
           providers
         </p>
-        {/* Pid input box */}
         <input
           type="text"
           className="form-control"
           style={{ maxWidth: "600px" }}
           id="input-pid"
           value={pid}
-          onChange={(event) => {
-            handleChange(event);
-          }}
+          onChange={handleChange}
           autoComplete="off"
         />
-        <div className="info">{tooltip}</div>
+        <div className="info">
+          {results.length === 0 ? (
+            <div style={{ color: "grey" }}>
+              <strong>Please enter a valid Pid</strong>
+              <br />
+              <em>
+                supported pids: ark, arXiv, swh, doi, urn:nbn{" "}
+                <Link to="/supported-pids"> and more...</Link>
+              </em>
+            </div>
+          ) : (
+            results.map((result, index) => (
+              <div key={index}>
+                <strong>Format: </strong>
+                <span>{result.type + " "}</span>
+                <span className="mx-2">-</span>
+                <strong>Valid:</strong>
+                <span>{result.status === IdStatus.Valid ? "✅" : "❌"}</span>
+                <br />
+                <div className="m-2" style={{ color: "grey" }}>
+                  {"example: "}
+                  <span
+                    className="fillin"
+                    data-example={result.example}
+                    onClick={handleGrabEg}
+                  >
+                    {result.example}
+                  </span>
+                </div>
+                <div>
+                  {sortResolutionModes(result.resolution_modes).map(
+                    (mode, idx) => (
+                      <a
+                        key={idx}
+                        className={`resolve-btn btn btn-lg btn-primary mr-2 ${
+                          result.status === IdStatus.Valid ? "" : "disabled"
+                        }`}
+                        href={generateResolveURL(
+                          mode.mode as ResolutionModes,
+                          pid,
+                        )}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {mode.mode === "landingpage" && (
+                          <FaHome className="btn-ico" />
+                        )}
+                        {mode.mode === "metadata" && (
+                          <FaBarcode className="btn-ico" />
+                        )}
+                        {mode.mode === "resource" && (
+                          <FaCube className="btn-ico" />
+                        )}
+                        {mode.name}
+                      </a>
+                    ),
+                  )}
+                </div>
+                {index + 1 < results.length ? <hr /> : ""}
+              </div>
+            ))
+          )}
+        </div>
         <br />
-        {/* Resolve button */}
-        <strong className="text-muted" style={{ fontSize: "1.2rem" }}>
-          resolve:{" "}
-        </strong>{" "}
-        <a
-          className={`resolve-btn btn btn-lg btn-primary mr-2 ${
-            resolutionModes.includes(ResolutionModes.LandingPage) &&
-            result.status === IdStatus.Valid
-              ? ""
-              : "disabled"
-          }`}
-          href={generateResolveURL(ResolutionModes.LandingPage, pid)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <FaHome className="btn-ico" /> Landing Page
-        </a>{" "}
-        <a
-          className={`resolve-btn btn btn-lg btn-primary ${
-            resolutionModes.includes(ResolutionModes.Metadata) &&
-            result.status === IdStatus.Valid
-              ? ""
-              : "disabled"
-          }`}
-          href={generateResolveURL(ResolutionModes.Metadata, pid)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <FaBarcode className="btn-ico" /> Metadata
-        </a>{" "}
-        <a
-          className={`resolve-btn btn btn-lg btn-primary ${
-            resolutionModes.includes(ResolutionModes.Resource) &&
-            result.status === IdStatus.Valid
-              ? ""
-              : "disabled"
-          }`}
-          href={generateResolveURL(ResolutionModes.Resource, pid)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <FaCube className="btn-ico" /> Resource
-        </a>
       </div>
     </div>
   );
@@ -322,6 +309,15 @@ function App() {
               }
             >
               <Route index element={<UserRoleRequests />} />
+            </Route>
+            <Route path="/user-role-guide" element={<UserRoleGuide />} />
+            <Route
+              path="/users-table"
+              element={
+                <ProtectedRoute routeRoles={["admin", "provider_admin"]} />
+              }
+            >
+              <Route index element={<UsersTable />} />
             </Route>
             <Route path="/logout" element={<KeycloakLogout />} />
           </Routes>

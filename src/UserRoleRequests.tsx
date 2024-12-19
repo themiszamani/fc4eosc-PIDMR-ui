@@ -94,23 +94,77 @@ const RoleChangeRequestsTable: React.FC = () => {
     }
   };
 
+  const idToColor = (id: string) => {
+    // generate hash from id
+    const hash = Array.from(id).reduce(
+      (acc, char) => acc + char.charCodeAt(0),
+      0,
+    );
+
+    // define color palette
+    const palette = [
+      "#ea7286",
+      "#eab281",
+      "#e3e19f",
+      "#a9c484",
+      "#5d937b",
+      "#58525a",
+      "#a07ca7",
+      "#f4a4bf",
+      "#f5d1b6",
+      "#eeede3",
+      "#d6cec2",
+      "#a2a6a9",
+      "#777f8f",
+      "#a3b2d2",
+      "#bfded8",
+      "#bf796d",
+    ];
+
+    // select the color
+    return palette[hash % palette.length];
+  };
+
+  const renderInitialCircle = (id: string, name: string) => {
+    const initial = name.charAt(0).toUpperCase();
+    const color = idToColor(id);
+    const style = {
+      backgroundColor: color,
+      borderRadius: "50%",
+      width: "40px",
+      height: "40px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      color: "#fff",
+      fontSize: "20px",
+      fontWeight: "bold",
+    };
+
+    return <div style={style}>{initial}</div>;
+  };
+
   const columns: TableColumn<RoleChangeRequest>[] = [
     {
       name: "Name",
       selector: (row) => row.name,
       cell: (row) => (
-        <div className="row">
+        <>
+          <div className="m-1">
+            {renderInitialCircle(row.id.toString(), row.name)}
+          </div>
           <div>
-            {row.name} {row.surname}{" "}
+            <div>
+              {row.name} {row.surname}{" "}
+            </div>
+            <div style={{ color: "gray", fontSize: "12px" }}>
+              id: {row.user_id.substring(0, 15)}..
+            </div>
           </div>
-          <div style={{ color: "gray", fontSize: "12px" }}>
-            id: {row.user_id.substring(0, 10)}..
-          </div>
-        </div>
+        </>
       ),
       sortable: true,
       wrap: true,
-      width: "200px",
     },
     {
       name: "Email",
@@ -118,13 +172,11 @@ const RoleChangeRequestsTable: React.FC = () => {
       sortable: true,
       wrap: true,
     },
-    { name: "Role", selector: (row) => row.role, sortable: true, wrap: true },
     {
       name: "Description",
       selector: (row) => row.description,
       sortable: true,
       wrap: true,
-      width: "140px",
     },
     {
       name: "Requested On",
@@ -189,8 +241,8 @@ const RoleChangeRequestsTable: React.FC = () => {
     const matchesText =
       request.name.toLowerCase().includes(filterText.toLowerCase()) ||
       request.surname.toLowerCase().includes(filterText.toLowerCase()) ||
+      request.user_id.toLowerCase().includes(filterText.toLowerCase()) ||
       request.email.toLowerCase().includes(filterText.toLowerCase()) ||
-      request.role.toLowerCase().includes(filterText.toLowerCase()) ||
       request.description.toLowerCase().includes(filterText.toLowerCase());
 
     const matchesStatus = filterStatus

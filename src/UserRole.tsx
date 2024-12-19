@@ -102,10 +102,14 @@ function RequestRolePromotion() {
         if (response.ok) {
           const requestData = await response.json();
           const userRequests = requestData.content;
+          // console.log("Requests:", requestData);
+          // console.log("userRequests:", userRequests[0].user_id);
+
           if (Array.isArray(userRequests)) {
             const userRequest = userRequests.find(
               (element: RoleChangeRequest) => element.user_id === userid,
             );
+            console.log("userRequest:", userRequest);
             if (userRequest) {
               setPendingRequest(userRequest);
             } else {

@@ -1,5 +1,6 @@
 // Types for supported PIDS view
 export type ApiResponse = {
+  size: unknown;
   size_of_page: number;
   number_of_page: number;
   total_elements: number;
@@ -34,7 +35,7 @@ export type Provider = {
 export type ResolutionMode = {
   name: string;
   mode: string;
-  endpoint: string;
+  endpoints: string[];
 };
 
 export type ProviderInput = {
@@ -60,3 +61,11 @@ export type RoleChangeRequest = {
   updated_by: string;
   status: string;
 };
+
+export interface UserList {
+  id: string;
+  roles: string[];
+  name: string;
+  surname: string;
+  email: string;
+}

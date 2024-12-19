@@ -3,7 +3,13 @@ import { Link } from "react-router-dom";
 import logo from "./assets/logo.svg";
 import { AuthContext } from "./auth";
 import { useContext } from "react";
-import { FaCog, FaSignOutAlt, FaUser, FaUserCheck } from "react-icons/fa";
+import {
+  FaCog,
+  FaSignOutAlt,
+  FaUser,
+  FaUserCheck,
+  FaUsers,
+} from "react-icons/fa";
 
 function Navigation() {
   const { authenticated, userid } = useContext(AuthContext)!;
@@ -48,6 +54,9 @@ function Navigation() {
           <Nav.Link as={Link} to="/supported-pids">
             <strong>Supported PIDs</strong>
           </Nav.Link>
+          <Nav.Link as={Link} to="/user-role-guide">
+            <strong>Provider Guide</strong>
+          </Nav.Link>
         </Nav>
         {/* login button */}
         {!authenticated && (
@@ -67,11 +76,17 @@ function Navigation() {
                   <FaCog className="me-2" />
                   Manage PIDs
                 </Dropdown.Item>
-                {hasRole("admin") || hasRole("provider_admin") ? (
-                  <Dropdown.Item as={Link} to="/user-role-requests">
-                    <FaUserCheck className="me-2" />
-                    Role Requests
-                  </Dropdown.Item>
+                {hasRole("admin") ? (
+                  <>
+                    <Dropdown.Item as={Link} to="/users-table">
+                      <FaUsers className="me-2" />
+                      View All Users
+                    </Dropdown.Item>
+                    <Dropdown.Item as={Link} to="/user-role-requests">
+                      <FaUserCheck className="me-2" />
+                      Role Requests
+                    </Dropdown.Item>
+                  </>
                 ) : null}
                 <hr />
                 <Dropdown.Item as={Link} to="/logout">

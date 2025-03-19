@@ -51,7 +51,7 @@ enum IdStatus {
 type IdResponse = {
   status: IdStatus;
   type: string;
-  example: string;
+  examples: string[];
   resolution_modes: IdResponseResolutionMode[];
 };
 
@@ -170,14 +170,20 @@ function Main() {
                 <span>{result.status === IdStatus.Valid ? "✅" : "❌"}</span>
                 <br />
                 <div className="m-2" style={{ color: "grey" }}>
-                  {"example: "}
-                  <span
-                    className="fillin"
-                    data-example={result.example}
-                    onClick={handleGrabEg}
-                  >
-                    {result.example}
-                  </span>
+                  <div>examples: </div>
+                  <>
+                    {result.examples.map((item) => {
+                      return (
+                        <span
+                          className="fillin"
+                          data-example={item}
+                          onClick={handleGrabEg}
+                        >
+                          {item}
+                        </span>
+                      );
+                    })}
+                  </>
                 </div>
                 <div>
                   {sortResolutionModes(result.resolution_modes).map(

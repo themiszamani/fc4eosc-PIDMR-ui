@@ -28,14 +28,19 @@ export type Provider = {
   resolution_modes: ResolutionMode[];
   regexes: string[];
   status?: string;
-  example?: string;
+  examples: string[];
   user_id: string | null;
 };
 
 export type ResolutionMode = {
   name: string;
   mode: string;
-  endpoints: string[];
+  endpoints: Endpoint[];
+};
+
+export type Endpoint = {
+  link: string;
+  provider: string;
 };
 
 export type ProviderInput = {
@@ -45,7 +50,7 @@ export type ProviderInput = {
   relies_on_dois: boolean;
   resolution_modes: ResolutionMode[];
   regexes: string[];
-  example?: string;
+  examples: string[];
 };
 
 export type RoleChangeRequest = {

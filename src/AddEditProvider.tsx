@@ -477,7 +477,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
               size="sm"
               onClick={handleExampleAdd}
             >
-              Add regex
+              Add example
             </Button>
           </Form.Group>
         </fieldset>

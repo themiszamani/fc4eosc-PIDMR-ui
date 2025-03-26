@@ -18,6 +18,11 @@ import { Footer } from "./Footer";
 import React from "react";
 import UsersTable from "./UsersTable";
 import UserRoleGuide from "./UserRoleGuide";
+import Terms from "./about/Terms";
+import Privacy from "./about/Privacy";
+import Interoperability from "./about/Interoperability";
+import AcceptableUse from "./about/AcceptableUse";
+import Disclaimer from "./about/Disclaimer";
 
 const Navigation = React.lazy(() => import("./Navigation"));
 
@@ -269,6 +274,16 @@ function App() {
         <Container>
           <Routes>
             <Route path="/" element={<Main />} />
+            <Route
+              path="/about/interoperability"
+              element={<Interoperability />}
+            />
+            <Route path="/about/acceptable-use" element={<AcceptableUse />} />
+            <Route path="/about/privacy" element={<Privacy />} />
+
+            <Route path="/about/terms" element={<Terms />} />
+            <Route path="/about/disclaimer" element={<Disclaimer />} />
+
             <Route path="/supported-pids" element={<SupportedPids />} />
             <Route
               path="/managed-pids"

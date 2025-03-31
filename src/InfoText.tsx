@@ -10,7 +10,7 @@ interface ProviderInfo {
   regexes: FieldInfo;
   relies_on_dois: FieldInfo;
   modes: FieldInfo;
-  example: FieldInfo;
+  examples: FieldInfo;
 }
 
 interface UserInfo {
@@ -46,7 +46,7 @@ const AddEditProviderInfo: ProviderInfo = {
     label: "Label",
     info: "Please select the mode that you support as provider.",
   },
-  example: {
+  examples: {
     label: "Label",
     info: "Please add a PID that could be used as an example in the PID Meta Resolver",
   },

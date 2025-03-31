@@ -3,13 +3,13 @@ import { FaEdit, FaInfoCircle, FaPlusCircle } from "react-icons/fa";
 import { AuthContext } from "./auth";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Provider, ProviderInput } from "./types";
+import { Endpoint, Provider, ProviderInput } from "./types";
 import { toast } from "react-hot-toast";
 import { AddEditProviderInfo } from "./InfoText";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
-const PROVIDERS_ADMIN_API_ROUTE = `${PIDMR_API}/v2/admin/providers`;
+const PROVIDERS_ADMIN_API_ROUTE = `${PIDMR_API}/v3/admin/providers`;
 const PROVIDERS_ADMIN_API_ROUTE_V1 = `${PIDMR_API}/v1/admin/providers`;
 
 function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
@@ -22,7 +22,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     type: "",
     name: "",
     description: "",
-    example: "",
+    examples: [""],
     relies_on_dois: false,
     resolution_modes: [],
     regexes: [""],
@@ -43,6 +43,23 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
   const handleRegexAdd = () => {
     const updatedRegexes = [...info.regexes, ""];
     setInfo({ ...info, regexes: updatedRegexes });
+  };
+
+  const handleExampleChange = (index: number, value: string) => {
+    const updatedInfo = { ...info };
+    updatedInfo.examples[index] = value;
+    setInfo(updatedInfo);
+  };
+
+  const handleExampleRemove = (index: number) => {
+    const updatedInfo = { ...info };
+    updatedInfo.examples.splice(index, 1);
+    setInfo(updatedInfo);
+  };
+
+  const handleExampleAdd = () => {
+    const updatedExamples = [...info.examples, ""];
+    setInfo({ ...info, examples: updatedExamples });
   };
 
   useEffect(() => {
@@ -138,7 +155,7 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
         ...info,
         resolution_modes: [
           ...info.resolution_modes,
-          { name: "", mode, endpoints: [""] },
+          { name: "", mode, endpoints: [{ link: "", provider: "" }] },
         ],
       });
     } else {
@@ -155,7 +172,11 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
     setInfo({ ...info, relies_on_dois: e.target.checked });
   };
 
-  const handleEndpointChange = (mode: string, index: number, value: string) => {
+  const handleEndpointChange = (
+    mode: string,
+    index: number,
+    value: Endpoint,
+  ) => {
     const updatedModes = info.resolution_modes.map((item) =>
       item.mode === mode
         ? {
@@ -172,7 +193,10 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
   const handleAddEndpoint = (mode: string) => {
     const updatedModes = info.resolution_modes.map((item) =>
       item.mode === mode
-        ? { ...item, endpoints: [...item.endpoints, ""] }
+        ? {
+            ...item,
+            endpoints: [...item.endpoints, { link: "", provider: "" }],
+          }
         : item,
     );
     setInfo({ ...info, resolution_modes: updatedModes });
@@ -366,13 +390,26 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
                           <Col>
                             <Form.Control
                               type="text"
-                              value={endpoint}
+                              value={endpoint.link}
+                              placeholder="Enter Link Address (URL)"
                               onChange={(e) =>
-                                handleEndpointChange(
-                                  mode,
-                                  index,
-                                  e.target.value,
-                                )
+                                handleEndpointChange(mode, index, {
+                                  ...endpoint,
+                                  link: e.target.value,
+                                })
+                              }
+                            />
+                          </Col>
+                          <Col>
+                            <Form.Control
+                              type="text"
+                              value={endpoint.provider}
+                              placeholder="Enter Provider Name"
+                              onChange={(e) =>
+                                handleEndpointChange(mode, index, {
+                                  ...endpoint,
+                                  provider: e.target.value,
+                                })
                               }
                             />
                           </Col>
@@ -399,21 +436,49 @@ function AddEditProvider({ editMode = 0 }: { editMode?: number }) {
               </div>
             ))}
           </Form.Group>
-          <Form.Group className="mt-3 mb-3" controlId="formProviderExample">
-            <Form.Label>PID Example</Form.Label>
+          <Form.Group className="mb-3 mt-4" controlId="formProviderExamples">
+            <Form.Label>PID Examples</Form.Label>
             <span className="info-icon">
               {" "}
               i
               <span className="info-text">
-                {AddEditProviderInfo.example.info}
+                {AddEditProviderInfo.examples.info}
               </span>
             </span>
-            <Form.Control
-              type="text"
-              placeholder="Provide a valid PID as an example"
-              onChange={(e) => setInfo({ ...info, example: e.target.value })}
-              value={info.example}
-            />
+            {info.examples.map((item, index) => (
+              <Row key={`examples_${index}`} className="mt-1">
+                <Col>
+                  <Form.Control
+                    type="text"
+                    name={`formProviderExample_${index}`}
+                    value={item}
+                    onChange={(e) => {
+                      handleExampleChange(index, e.target.value);
+                    }}
+                  />
+                </Col>
+                <Col xs="auto">
+                  <Button
+                    className="ms-2"
+                    variant="outline-danger"
+                    onClick={() => {
+                      handleExampleRemove(index);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Col>
+              </Row>
+            ))}
+
+            <Button
+              className="d-block mt-1 mb-1"
+              variant="outline-success"
+              size="sm"
+              onClick={handleExampleAdd}
+            >
+              Add example
+            </Button>
           </Form.Group>
         </fieldset>
         {editMode !== 2 && (

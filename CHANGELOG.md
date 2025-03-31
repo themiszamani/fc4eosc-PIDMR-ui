@@ -2,6 +2,12 @@
 
 All notable changes in FC4E-CAT-UI project are documented here
 
+## [v1.4.0](https://github.com/FC4E-CAT/fc4e-cat-ui/releases/tag/v1.4.0) (2025-03-28)
+
+### Added:
+
+- PIDMR-277 Update ui to handle the new provider schema ([#64](https://github.com/FC4E-WP5/fc4eosc-PIDMR-ui/pull/64))
+
 ## [v1.3.0](https://github.com/FC4E-CAT/fc4e-cat-ui/releases/tag/v1.3.0) (2024-12-19)
 
 ### Added:

@@ -7,7 +7,7 @@ import logoGwdg from "@/assets/logo-gwdg.svg";
 import logoOpenaire from "@/assets/logo-openaire.png";
 import logoINRIA from "@/assets/logo-inria.svg";
 import logoUNHEL from "@/assets/logo_UnHel.png";
-import logoCSC from "@/assets/logo-csc.png";
+import logoCSC from "@/assets/logo-CSC.png";
 
 function Footer() {
   // tag build information on footer

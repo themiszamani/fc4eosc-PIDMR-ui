@@ -6,7 +6,7 @@ import logoGrnet from "@/assets/logo-grnet.png";
 import logoGwdg from "@/assets/logo-gwdg.svg";
 import logoOpenaire from "@/assets/logo-openaire.png";
 import logoINRIA from "@/assets/logo-inria.svg";
-import logoUNHEL from "@/assets/Logo_University_of_Helsinki_fi.png";
+import logoUNHEL from "@/assets/logo_UnHel.png";
 import logoCSC from "@/assets/logo-csc.png";
 
 function Footer() {

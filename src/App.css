@@ -1,7 +1,7 @@
 .page-center {
   display: flex;
   align-items: center;
-  min-height: 80vh;
+  min-height: 60vh;
 }
 
 .resolve-panel {
@@ -10,12 +10,32 @@
   text-align: center;
 }
 
+footer h6 {
+  font-weight: 700;
+  color: gray;
+}
+
+footer a {
+  color: #1b7f98;
+  text-decoration: none;
+}
+
 .nav-link strong {
   color: #35badb;
 }
 
 .main-nav {
   border-bottom: 1px solid darkgrey;
+}
+
+.pidmr-logo-sm {
+  width: 100px;
+  margin: 5px;
+}
+
+.pidmr-logo-xsm {
+  width: 70px;
+  margin: 5px;
 }
 
 .info {

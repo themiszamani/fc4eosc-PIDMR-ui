@@ -6,9 +6,8 @@ import logoGrnet from "@/assets/logo-grnet.png";
 import logoGwdg from "@/assets/logo-gwdg.svg";
 import logoOpenaire from "@/assets/logo-openaire.png";
 import logoINRIA from "@/assets/logo-inria.svg";
-import logoUNHEL from "@/assets/Logo_University_of_Helsinki_fi.png"
+import logoUNHEL from "@/assets/Logo_University_of_Helsinki_fi.png";
 import logoCSC from "@/assets/logo-csc.png";
-
 
 function Footer() {
   // tag build information on footer
@@ -71,20 +70,35 @@ function Footer() {
             <a href="https://www.gwdg.de/" target="_blank" rel="noreferrer">
               <img className="pidmr-logo-sm" src={logoGwdg} alt="GWDG" />
             </a>
-            <br/>
+            <br />
             <a href="https://www.openaire.eu/" target="_blank" rel="noreferrer">
-              <img className="pidmr-logo-xsm" src={logoOpenaire} alt="OPENAIRE" />
+              <img
+                className="pidmr-logo-xsm"
+                src={logoOpenaire}
+                alt="OPENAIRE"
+              />
             </a>
             <a href="https://www.csc.fi/en" target="_blank" rel="noreferrer">
               <img className="pidmr-logo-sm" src={logoCSC} alt="CSC" />
             </a>
             <a href="https://www.inria.fr/en" target="_blank" rel="noreferrer">
-              <img className="pidmr-logo-sm" src={logoINRIA} alt="Institut national de recherche en sciences et technologies du numérique" />
+              <img
+                className="pidmr-logo-sm"
+                src={logoINRIA}
+                alt="Institut national de recherche en sciences et technologies du numérique"
+              />
             </a>
-            <a href="https://www.helsinki.fi/en" target="_blank" rel="noreferrer">
-              <img className="pidmr-logo-xsm" src={logoUNHEL} alt="University of Helsinki" />
+            <a
+              href="https://www.helsinki.fi/en"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                className="pidmr-logo-xsm"
+                src={logoUNHEL}
+                alt="University of Helsinki"
+              />
             </a>
-            
           </Col>
         </Row>
         <div className="text-center">

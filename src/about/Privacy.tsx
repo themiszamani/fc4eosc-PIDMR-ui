@@ -58,8 +58,8 @@ function Privacy() {
             whenever deemed necessary, whereas any changes shall become
             effective after they are posted on the{" "}
             <a href="https://pidmr.argo.grnet.gr/">
-                https://pidmr.argo.grnet.gr/
-                </a>{" "}
+              https://pidmr.argo.grnet.gr/
+            </a>{" "}
           </p>
           <p>
             For the purposes of this Privacy Statement, the terms &quot;data
@@ -74,7 +74,7 @@ function Privacy() {
                 &quot;Website&quot; - the website accessible through the domain
                 names{" "}
                 <a href="https://pidmr.argo.grnet.gr/">
-                https://pidmr.argo.grnet.gr/
+                  https://pidmr.argo.grnet.gr/
                 </a>{" "}
                 , including all of the web pages thereof.
               </li>

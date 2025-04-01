@@ -23,6 +23,7 @@ import Privacy from "./about/Privacy";
 import Interoperability from "./about/Interoperability";
 import AcceptableUse from "./about/AcceptableUse";
 import Disclaimer from "./about/Disclaimer";
+import Cookies from "./about/Cookies";
 
 const Navigation = React.lazy(() => import("./Navigation"));
 
@@ -283,6 +284,7 @@ function App() {
 
             <Route path="/about/terms" element={<Terms />} />
             <Route path="/about/disclaimer" element={<Disclaimer />} />
+            <Route path="/about/cookies" element={<Cookies />} />
 
             <Route path="/supported-pids" element={<SupportedPids />} />
             <Route

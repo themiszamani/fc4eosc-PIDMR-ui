@@ -1,5 +1,4 @@
 import { FaBook, FaCalendar, FaGithub } from "react-icons/fa";
-import packageJson from "../package.json";
 import { Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import logoGrnet from "@/assets/logo-grnet.png";
@@ -8,6 +7,7 @@ import logoOpenaire from "@/assets/logo-openaire.png";
 import logoINRIA from "@/assets/logo-inria.svg";
 import logoUNHEL from "@/assets/logo_UnHel.png";
 import logoCSC from "@/assets/logo-CSC.png";
+import packageJson from "../../../package.json";
 
 function Footer() {
   // tag build information on footer

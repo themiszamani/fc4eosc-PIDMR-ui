@@ -1,9 +1,9 @@
 import { Badge, Button, Col, Form, Row } from "react-bootstrap";
 import { FaEdit, FaInfoCircle, FaPlusCircle } from "react-icons/fa";
-import { AuthContext } from "./auth";
+import { AuthContext } from "../../auth";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Endpoint, Provider, ProviderInput } from "./types";
+import { Endpoint, Provider, ProviderInput } from "../../types";
 import { toast } from "react-hot-toast";
 import { AddEditProviderInfo } from "./InfoText";
 

@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { FaUser, FaShieldAlt, FaRegCheckCircle } from "react-icons/fa";
 import { Button, Form } from "react-bootstrap";
-import { AuthContext } from "./auth";
-import { UserList } from "./types";
+import { AuthContext } from "../../auth";
+import { UserList } from "../../types";
 
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const USERS_API_ROUTE = `${PIDMR_API}/v1/admin/users`;

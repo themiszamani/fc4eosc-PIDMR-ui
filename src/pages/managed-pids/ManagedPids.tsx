@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { AuthContext } from "./auth";
+import { AuthContext } from "../../auth";
 import {
   FaCheck,
   FaCog,
@@ -11,10 +11,10 @@ import {
   FaPlusCircle,
   FaTrashAlt,
 } from "react-icons/fa";
-import { ApiResponse, Provider } from "./types";
+import { ApiResponse, Provider } from "../../types";
 import { Alert, Button, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import DataTable, { TableColumn } from "react-data-table-component";
-import { DeleteModal } from "./DeleteModal";
+import { DeleteModal } from "../../common/components/DeleteModal";
 import toast from "react-hot-toast";
 import { StatusModal } from "./StatusModal";
 

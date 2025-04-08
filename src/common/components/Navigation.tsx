@@ -1,7 +1,7 @@
 import { Dropdown, Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import logo from "./assets/logo.svg";
-import { AuthContext } from "./auth";
+import logo from "@/assets/logo.svg";
+import { AuthContext } from "../../auth";
 import { useContext } from "react";
 import {
   FaCog,

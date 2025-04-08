@@ -1,17 +1,17 @@
 import { Button, Col, Form, Row, Alert, Spinner } from "react-bootstrap";
 import { FaPlusCircle } from "react-icons/fa";
-import { AuthContext } from "./auth";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { PromotionRequestInfo } from "./InfoText";
-import { RoleChangeRequest } from "./types";
+import { AuthContext } from "../../auth";
+import { RoleChangeRequest } from "../../types";
+import { PromotionRequestInfo } from "../managed-pids/InfoText";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const USER_ROLE_REQUEST_API_ROUTE = `${PIDMR_API}/v1/users/role-change-request`;
 
-function RequestRolePromotion() {
+function UserRole() {
   const navigate = useNavigate();
   const { keycloak } = useContext(AuthContext)!;
   const { userid } = useContext(AuthContext)!;
@@ -277,4 +277,4 @@ function RequestRolePromotion() {
   );
 }
 
-export default RequestRolePromotion;
+export default UserRole;

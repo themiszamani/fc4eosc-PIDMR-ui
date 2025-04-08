@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import DataTable, { TableColumn } from "react-data-table-component";
 import { Button, Form } from "react-bootstrap";
-import { RoleChangeRequest } from "./types";
+import { RoleChangeRequest } from "../../types";
 import { FaUsersCog } from "react-icons/fa";
-import { AuthContext } from "./auth";
+import { AuthContext } from "../../auth";
 import { toast } from "react-hot-toast";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
 const PROMOTE_USER_ROLE_API_ROUTE = `${PIDMR_API}/v1/admin/users/role-change-requests`;
 
-const RoleChangeRequestsTable: React.FC = () => {
+const UserRoleRequests: React.FC = () => {
   const customStyles = {
     headCells: {
       style: {
@@ -316,4 +316,4 @@ const RoleChangeRequestsTable: React.FC = () => {
   );
 };
 
-export default RoleChangeRequestsTable;
+export default UserRoleRequests;

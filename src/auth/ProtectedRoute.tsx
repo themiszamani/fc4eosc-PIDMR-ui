@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import Keycloak from "keycloak-js";
-import KeycloakConfig from "../keycloak.json";
+import KeycloakConfig from "../server/keycloak/keycloak.json";
 import { ProfileResponse } from "../types";
 
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;

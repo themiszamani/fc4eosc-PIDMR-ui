@@ -1,31 +1,30 @@
-import { useState, useEffect, ChangeEvent, MouseEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, MouseEvent } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import { Container, Navbar } from "react-bootstrap";
-
-import "./App.css";
 import { FaBarcode } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaCube } from "react-icons/fa";
-import { AuthProvider, KeycloakLogout, ProtectedRoute } from "./auth";
-// import Navigation from "./Navigation";
-import AddEditProvider from "./AddEditProvider";
-import UserRole from "./UserRole";
-import UserRoleRequests from "./UserRoleRequests";
-import SupportedPids from "./SupportedPids";
-import ManagedPids from "./ManagedPids";
+import { AuthProvider, KeycloakLogout, ProtectedRoute } from "../../auth";
 import { Toaster } from "react-hot-toast";
+import Interoperability from "../../pages/about/Interoperability";
+import AcceptableUse from "../../pages/about/AcceptableUse";
+import Privacy from "../../pages/about/Privacy";
+import Terms from "../../pages/about/Terms";
+import Disclaimer from "../../pages/about/Disclaimer";
+import Cookies from "../../pages/about/Cookies";
+import SupportedPids from "../../pages/supported-pids/SupportedPids";
+import ManagedPids from "../../pages/managed-pids/ManagedPids";
+import AddEditProvider from "../../pages/managed-pids/AddEditProvider";
+import UserRole from "../../pages/user-role/UserRole";
+import UserRoleRequests from "../../pages/user-role/UserRoleRequests";
+import UserRoleGuide from "../../pages/user-role/UserRoleGuide";
+import UsersTable from "../../pages/user-role/UsersTable";
 import { Footer } from "./Footer";
-import React from "react";
-import UsersTable from "./UsersTable";
-import UserRoleGuide from "./UserRoleGuide";
-import Terms from "./about/Terms";
-import Privacy from "./about/Privacy";
-import Interoperability from "./about/Interoperability";
-import AcceptableUse from "./about/AcceptableUse";
-import Disclaimer from "./about/Disclaimer";
-import Cookies from "./about/Cookies";
+import "../styles/App.css";
 
-const Navigation = React.lazy(() => import("./Navigation"));
+const Navigation = React.lazy(
+  () => import("../../common/components/Navigation"),
+);
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;

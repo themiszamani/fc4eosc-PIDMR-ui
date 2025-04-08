@@ -19,6 +19,7 @@ import UserRole from "../../pages/user-role/UserRole";
 import UserRoleRequests from "../../pages/user-role/UserRoleRequests";
 import UserRoleGuide from "../../pages/user-role/UserRoleGuide";
 import UsersTable from "../../pages/user-role/UsersTable";
+import ROUTES from "../../server/endpoints/routes";
 import { Footer } from "./Footer";
 import "../styles/App.css";
 
@@ -273,21 +274,22 @@ function App() {
         {/* Main content container - Renders views based on routes */}
         <Container>
           <Routes>
-            <Route path="/" element={<Main />} />
+            <Route path={ROUTES.HOME} element={<Main />} />
             <Route
-              path="/about/interoperability"
+              path={ROUTES.ABOUT.INTEROPERABILITY}
               element={<Interoperability />}
             />
-            <Route path="/about/acceptable-use" element={<AcceptableUse />} />
-            <Route path="/about/privacy" element={<Privacy />} />
-
-            <Route path="/about/terms" element={<Terms />} />
-            <Route path="/about/disclaimer" element={<Disclaimer />} />
-            <Route path="/about/cookies" element={<Cookies />} />
-
-            <Route path="/supported-pids" element={<SupportedPids />} />
             <Route
-              path="/managed-pids"
+              path={ROUTES.ABOUT.ACCEPTABLE_USE}
+              element={<AcceptableUse />}
+            />
+            <Route path={ROUTES.ABOUT.PRIVACY} element={<Privacy />} />
+            <Route path={ROUTES.ABOUT.TERMS} element={<Terms />} />
+            <Route path={ROUTES.ABOUT.DISCLAIMER} element={<Disclaimer />} />
+            <Route path={ROUTES.ABOUT.COOKIES} element={<Cookies />} />
+            <Route path={ROUTES.SUPPORTED_PIDS} element={<SupportedPids />} />
+            <Route
+              path={ROUTES.MANAGED_PIDS.ROOT}
               element={
                 <ProtectedRoute routeRoles={["provider_admin", "admin"]} />
               }
@@ -295,7 +297,7 @@ function App() {
               <Route index element={<ManagedPids />} />
             </Route>
             <Route
-              path="/managed-pids/add"
+              path={ROUTES.MANAGED_PIDS.ADD}
               element={
                 <ProtectedRoute routeRoles={["provider_admin", "admin"]} />
               }
@@ -303,7 +305,7 @@ function App() {
               <Route index element={<AddEditProvider />} />
             </Route>
             <Route
-              path="/managed-pids/view/:id"
+              path={ROUTES.MANAGED_PIDS.VIEW}
               element={
                 <ProtectedRoute routeRoles={["provider_admin", "admin"]} />
               }
@@ -311,7 +313,7 @@ function App() {
               <Route index element={<AddEditProvider editMode={2} />} />
             </Route>
             <Route
-              path="/managed-pids/edit/:id"
+              path={ROUTES.MANAGED_PIDS.EDIT}
               element={
                 <ProtectedRoute routeRoles={["admin", "provider_admin"]} />
               }
@@ -319,29 +321,29 @@ function App() {
               <Route index element={<AddEditProvider editMode={1} />} />
             </Route>
             <Route
-              path="/user-role"
+              path={ROUTES.USER_ROLE.ROOT}
               element={<ProtectedRoute routeRoles={[]} />}
             >
               <Route index element={<UserRole />} />
             </Route>
             <Route
-              path="/user-role-requests"
+              path={ROUTES.USER_ROLE.REQUESTS}
               element={
                 <ProtectedRoute routeRoles={["admin", "provider_admin"]} />
               }
             >
               <Route index element={<UserRoleRequests />} />
             </Route>
-            <Route path="/user-role-guide" element={<UserRoleGuide />} />
+            <Route path={ROUTES.USER_ROLE.GUIDE} element={<UserRoleGuide />} />
             <Route
-              path="/users-table"
+              path={ROUTES.USER_ROLE.USERS_TABLE}
               element={
                 <ProtectedRoute routeRoles={["admin", "provider_admin"]} />
               }
             >
               <Route index element={<UsersTable />} />
             </Route>
-            <Route path="/logout" element={<KeycloakLogout />} />
+            <Route path={ROUTES.LOGOUT} element={<KeycloakLogout />} />
           </Routes>
         </Container>
 

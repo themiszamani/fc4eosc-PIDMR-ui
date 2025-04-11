@@ -1,6 +1,14 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import { FaBarcode, FaHome, FaCube } from "react-icons/fa";
+import {
+  Card,
+  Badge,
+  Button,
+  Row,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
@@ -89,8 +97,11 @@ function HomePage() {
           }
           // Assuming the response is in JSON format
           const data: IdResponse[] = await response.json();
+          const validResults = data?.filter(
+            (result) => result?.status === IdStatus.Valid,
+          );
           // Update state with the fetched data
-          setResults(data);
+          setResults(validResults);
         } catch (error) {
           console.log(error);
         } finally {
@@ -113,7 +124,7 @@ function HomePage() {
   return (
     <div className="page-center">
       <div className="resolve-panel">
-        <h1 className="text-large">🏷️ ➜ 📦</h1>
+        <h1>🏷️ ➜ 📦</h1>
         <p>
           The FC4EOSC Metaresolver resolves individual handles from various
           providers
@@ -121,15 +132,14 @@ function HomePage() {
         <input
           type="text"
           className="form-control"
-          style={{ maxWidth: "600px" }}
           id="input-pid"
           value={pid}
           onChange={handleChange}
           autoComplete="off"
         />
-        <div className="info">
+        <div className="mt-3">
           {results.length === 0 ? (
-            <div style={{ color: "grey" }}>
+            <div className="info">
               <strong>Please enter a valid Pid</strong>
               <br />
               <em>
@@ -139,60 +149,74 @@ function HomePage() {
             </div>
           ) : (
             results.map((result, index) => (
-              <div key={index}>
-                <strong>Format: </strong>
-                <span>{result.type + " "}</span>
-                <span className="mx-2">-</span>
-                <strong>Valid:</strong>
-                <span>{result.status === IdStatus.Valid ? "✅" : "❌"}</span>
-                <br />
-                <div className="m-2" style={{ color: "grey" }}>
-                  <div>examples: </div>
-                  <>
-                    {result.examples.map((item) => {
-                      return (
+              <Card className="result-card" key={index}>
+                <Card.Body>
+                  <div className="result-header">
+                    <div className="result-info-container">
+                      <span className="type-heading">
+                        {result.type || "No type available"}
+                      </span>
+                      <Badge
+                        bg={
+                          result.status === IdStatus.Valid
+                            ? "success"
+                            : "danger"
+                        }
+                        className="status-badge"
+                      >
+                        {result.status === IdStatus.Valid ? "Valid" : "Invalid"}
+                      </Badge>
+                    </div>
+                    <div className="result-actions-container">
+                      {sortResolutionModes(result.resolution_modes).map(
+                        (mode, idx) => (
+                          <OverlayTrigger
+                            key={idx}
+                            placement="bottom"
+                            overlay={<Tooltip>{mode.name}</Tooltip>}
+                          >
+                            <Button
+                              as="a"
+                              className="border-0"
+                              disabled={result.status !== IdStatus.Valid}
+                              href={generateResolveURL(
+                                mode.mode as ResolutionModes,
+                                pid,
+                              )}
+                              rel="noreferrer"
+                              size="sm"
+                              target="_blank"
+                              variant="outline-secondary"
+                            >
+                              {mode.mode === "landingpage" && (
+                                <FaHome size={28} />
+                              )}
+                              {mode.mode === "metadata" && (
+                                <FaBarcode size={28} />
+                              )}
+                              {mode.mode === "resource" && <FaCube size={28} />}
+                            </Button>
+                          </OverlayTrigger>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                  <Row className="mb-1">
+                    <div className="example-text">
+                      <span>Example: </span>
+                      {result?.examples[0] && (
                         <span
-                          className="fillin"
-                          data-example={item}
+                          className={result.examples[0] && "fillin"}
+                          data-example={result.examples[0]}
                           onClick={handleGrabEg}
                         >
-                          {item}
+                          {result.examples[0]}
                         </span>
-                      );
-                    })}
-                  </>
-                </div>
-                <div>
-                  {sortResolutionModes(result.resolution_modes).map(
-                    (mode, idx) => (
-                      <a
-                        key={idx}
-                        className={`resolve-btn btn btn-lg btn-primary mr-2 ${
-                          result.status === IdStatus.Valid ? "" : "disabled"
-                        }`}
-                        href={generateResolveURL(
-                          mode.mode as ResolutionModes,
-                          pid,
-                        )}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {mode.mode === "landingpage" && (
-                          <FaHome className="btn-ico" />
-                        )}
-                        {mode.mode === "metadata" && (
-                          <FaBarcode className="btn-ico" />
-                        )}
-                        {mode.mode === "resource" && (
-                          <FaCube className="btn-ico" />
-                        )}
-                        {mode.name}
-                      </a>
-                    ),
-                  )}
-                </div>
-                {index + 1 < results.length ? <hr /> : ""}
-              </div>
+                      )}
+                    </div>
+                  </Row>
+                </Card.Body>
+              </Card>
             ))
           )}
         </div>

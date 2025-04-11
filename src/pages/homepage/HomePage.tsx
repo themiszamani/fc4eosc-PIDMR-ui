@@ -97,11 +97,8 @@ function HomePage() {
           }
           // Assuming the response is in JSON format
           const data: IdResponse[] = await response.json();
-          const validResults = data?.filter(
-            (result) => result?.status === IdStatus.Valid,
-          );
           // Update state with the fetched data
-          setResults(validResults);
+          setResults(data);
         } catch (error) {
           console.log(error);
         } finally {

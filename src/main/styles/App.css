@@ -1,7 +1,7 @@
 .page-center {
   display: flex;
   align-items: center;
-  min-height: 60vh;
+  margin-top: 140px;
 }
 
 .resolve-panel {
@@ -49,19 +49,78 @@ footer a {
 
 .fillin {
   cursor: pointer;
-  border-bottom: dashed;
+  border-bottom: 1px dashed #6c757d;
 }
 
 .fillin:hover {
   background-color: blanchedalmond;
 }
 
-.resolve-btn {
-  margin-bottom: 1rem;
-  margin-left: 0.6rem;
+.result-card {
+  width: 100%;
+  margin: auto;
+  margin-bottom: 10px;
+  background-color: #f0f2f5;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.btn-ico {
-  margin-top: -0.2rem;
-  margin-right: 0.4rem;
+.result-card .card-body {
+  padding: 6px 24px;
+}
+
+.result-card .type-heading {
+  font-size: 20px;
+  font-weight: bold;
+  color: #495057;
+}
+
+.result-card .status-badge {
+  padding: 4px 12px;
+  font-size: 15px;
+  letter-spacing: 0.9px;
+  font-weight: bold;
+  border-radius: 16px;
+}
+
+.result-card .status-badge.bg-success {
+  color: #28a745 !important;
+  border: 1px solid rgba(40, 167, 69, 0.2);
+  background-color: rgba(40, 167, 69, 0.1) !important;
+}
+
+.result-card .status-badge.bg-danger {
+  color: #dc3545 !important;
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.result-card .example-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6c757d;
+  font-size: 16px;
+  line-height: 18px;
+  font-weight: 400;
+  word-break: break-word;
+}
+
+.result-card .result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.result-card .result-info-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.result-card .result-actions-container {
+  display: flex;
+  gap: 8px;
 }

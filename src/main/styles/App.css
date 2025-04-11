@@ -62,7 +62,9 @@ footer a {
   margin-bottom: 10px;
   background-color: #f0f2f5;
   border: 1px solid #e9ecef;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 12%),
+    0 1px 2px rgb(0 0 0 / 10%);
 }
 
 .result-card .card-body {
@@ -78,46 +80,46 @@ footer a {
 .result-card .status-badge {
   padding: 4px 12px;
   font-size: 15px;
-  letter-spacing: 0.9px;
   font-weight: bold;
+  letter-spacing: 0.9px;
   border-radius: 16px;
 }
 
 .result-card .status-badge.bg-success {
   color: #28a745 !important;
-  border: 1px solid rgba(40, 167, 69, 0.2);
-  background-color: rgba(40, 167, 69, 0.1) !important;
+  background-color: rgb(40 167 69 / 10%) !important;
+  border: 1px solid rgb(40 167 69 / 20%);
 }
 
 .result-card .status-badge.bg-danger {
   color: #dc3545 !important;
-  border: 1px solid rgba(220, 53, 69, 0.2);
-  background-color: rgba(220, 53, 69, 0.1) !important;
+  background-color: rgb(220 53 69 / 10%) !important;
+  border: 1px solid rgb(220 53 69 / 20%);
 }
 
 .result-card .example-text {
   display: flex;
-  align-items: center;
   gap: 6px;
-  color: #6c757d;
+  align-items: center;
   font-size: 16px;
-  line-height: 18px;
   font-weight: 400;
+  line-height: 18px;
+  color: #6c757d;
   word-break: break-word;
 }
 
 .result-card .result-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   gap: 12px;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 8px;
 }
 
 .result-card .result-info-container {
   display: flex;
-  align-items: center;
   gap: 12px;
+  align-items: center;
 }
 
 .result-card .result-actions-container {

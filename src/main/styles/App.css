@@ -53,36 +53,42 @@ footer a {
 }
 
 .fillin:hover {
-  background-color: blanchedalmond;
+  background-color: #f8f9fa;
 }
 
 .result-card {
   width: 100%;
   margin: auto;
-  margin-bottom: 10px;
-  background-color: #f0f2f5;
   border: 1px solid #e9ecef;
+  border-radius: 0px;
   box-shadow:
-    0 1px 3px rgb(0 0 0 / 12%),
-    0 1px 2px rgb(0 0 0 / 10%);
+    0 1px 3px rgb(0 0 0 / 2%),
+    0 1px 2px rgb(0 0 0 / 2%);
 }
 
+.result-actions-container .disabled{
+  background-color: #ffffff;
+  color: white;
+}
+.result-actions-container a:hover{
+  background-color: #e9ecef;
+  color: #6c757d;
+}
 .result-card .card-body {
   padding: 6px 24px;
 }
 
 .result-card .type-heading {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   color: #495057;
 }
 
 .result-card .status-badge {
-  padding: 4px 12px;
-  font-size: 15px;
+  font-size: 11px;
   font-weight: bold;
   letter-spacing: 0.9px;
-  border-radius: 16px;
+  border-radius: 4px;
 }
 
 .result-card .status-badge.bg-success {
@@ -97,11 +103,16 @@ footer a {
   border: 1px solid rgb(220 53 69 / 20%);
 }
 
+.result-card .status-badge.bg-trying {
+  color: #cacaca !important;
+  gap: 8px;
+  font-style: italic;
+}
+
 .result-card .example-text {
   display: flex;
-  gap: 6px;
   align-items: center;
-  font-size: 16px;
+  font-size: 11px;
   font-weight: 400;
   line-height: 18px;
   color: #6c757d;
@@ -113,7 +124,7 @@ footer a {
   gap: 12px;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+
 }
 
 .result-card .result-info-container {

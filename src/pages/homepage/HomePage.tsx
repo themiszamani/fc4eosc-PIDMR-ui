@@ -1,6 +1,6 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from "react";
 import { Link } from "react-router-dom";
-import { FaBarcode, FaHome, FaCube } from "react-icons/fa";
+import { FaBarcode, FaHome, FaCube, FaSpinner,FaSourcetree } from "react-icons/fa";
 import {
   Card,
   Badge,
@@ -134,7 +134,7 @@ function HomePage() {
           onChange={handleChange}
           autoComplete="off"
         />
-        <div className="mt-3">
+        <div className="mt-1">
           {results.length === 0 ? (
             <div className="info">
               <strong>Please enter a valid Pid</strong>
@@ -157,11 +157,11 @@ function HomePage() {
                         bg={
                           result.status === IdStatus.Valid
                             ? "success"
-                            : "danger"
+                            : "trying text-secondary"
                         }
                         className="status-badge"
                       >
-                        {result.status === IdStatus.Valid ? "Valid" : "Invalid"}
+                        {result.status === IdStatus.Valid ? "Valid" : <FaSpinner size={12}  color="orange" />}
                       </Badge>
                     </div>
                     <div className="result-actions-container">
@@ -186,12 +186,12 @@ function HomePage() {
                               variant="outline-secondary"
                             >
                               {mode.mode === "landingpage" && (
-                                <FaHome size={28} />
+                                <FaHome size={18} />
                               )}
                               {mode.mode === "metadata" && (
-                                <FaBarcode size={28} />
+                                <FaBarcode size={18}  />
                               )}
-                              {mode.mode === "resource" && <FaCube size={28} />}
+                              {mode.mode === "resource" && <FaSourcetree size={18}  />}
                             </Button>
                           </OverlayTrigger>
                         ),

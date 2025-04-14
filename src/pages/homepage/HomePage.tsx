@@ -1,6 +1,11 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from "react";
 import { Link } from "react-router-dom";
-import { FaBarcode, FaHome, FaCube, FaSpinner,FaSourcetree } from "react-icons/fa";
+import {
+  FaBarcode,
+  FaHome,
+  FaSpinner,
+  FaSourcetree,
+} from "react-icons/fa";
 import {
   Card,
   Badge,
@@ -161,7 +166,11 @@ function HomePage() {
                         }
                         className="status-badge"
                       >
-                        {result.status === IdStatus.Valid ? "Valid" : <FaSpinner size={12}  color="orange" />}
+                        {result.status === IdStatus.Valid ? (
+                          "Valid"
+                        ) : (
+                          <FaSpinner size={12} color="orange" />
+                        )}
                       </Badge>
                     </div>
                     <div className="result-actions-container">
@@ -189,9 +198,11 @@ function HomePage() {
                                 <FaHome size={18} />
                               )}
                               {mode.mode === "metadata" && (
-                                <FaBarcode size={18}  />
+                                <FaBarcode size={18} />
                               )}
-                              {mode.mode === "resource" && <FaSourcetree size={18}  />}
+                              {mode.mode === "resource" && (
+                                <FaSourcetree size={18} />
+                              )}
                             </Button>
                           </OverlayTrigger>
                         ),

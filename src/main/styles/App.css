@@ -60,20 +60,22 @@ footer a {
   width: 100%;
   margin: auto;
   border: 1px solid #e9ecef;
-  border-radius: 0px;
+  border-radius: 0;
   box-shadow:
     0 1px 3px rgb(0 0 0 / 2%),
     0 1px 2px rgb(0 0 0 / 2%);
 }
 
-.result-actions-container .disabled{
-  background-color: #ffffff;
+.result-actions-container .disabled {
   color: white;
+  background-color: #fff;
 }
-.result-actions-container a:hover{
-  background-color: #e9ecef;
+
+.result-actions-container a:hover {
   color: #6c757d;
+  background-color: #e9ecef;
 }
+
 .result-card .card-body {
   padding: 6px 24px;
 }
@@ -104,9 +106,9 @@ footer a {
 }
 
 .result-card .status-badge.bg-trying {
-  color: #cacaca !important;
   gap: 8px;
   font-style: italic;
+  color: #cacaca !important;
 }
 
 .result-card .example-text {
@@ -124,7 +126,6 @@ footer a {
   gap: 12px;
   align-items: center;
   justify-content: space-between;
-
 }
 
 .result-card .result-info-container {

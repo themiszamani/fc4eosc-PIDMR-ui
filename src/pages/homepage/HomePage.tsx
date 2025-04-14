@@ -144,6 +144,11 @@ function HomePage() {
                 <Link to="/supported-pids"> and more...</Link>
               </em>
             </div>
+          ) : results?.length === 1 &&
+            results[0]?.status === IdStatus.Invalid ? (
+            <div className="no-results">
+              <strong>No results available</strong>
+            </div>
           ) : (
             results.map((result, index) => (
               <Card className="result-card" key={index}>

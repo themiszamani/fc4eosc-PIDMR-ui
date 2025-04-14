@@ -67,8 +67,7 @@ footer a {
 }
 
 .result-actions-container .disabled {
-  color: white;
-  background-color: #fff;
+  visibility: hidden;
 }
 
 .result-actions-container a:hover {
@@ -78,6 +77,17 @@ footer a {
 
 .result-card .card-body {
   padding: 6px 24px;
+}
+
+.no-results {
+  margin-top: 16px;
+}
+
+.no-results strong {
+  font-size: 18px;
+  font-style: italic;
+  line-height: 24px;
+  color: #6c757d;
 }
 
 .result-card .type-heading {

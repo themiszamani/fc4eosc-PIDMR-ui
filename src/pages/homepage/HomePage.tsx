@@ -1,11 +1,6 @@
 import { useState, useEffect, ChangeEvent, MouseEvent } from "react";
 import { Link } from "react-router-dom";
-import {
-  FaBarcode,
-  FaHome,
-  FaSpinner,
-  FaSourcetree,
-} from "react-icons/fa";
+import { FaBarcode, FaHome, FaSpinner, FaSourcetree } from "react-icons/fa";
 import {
   Card,
   Badge,

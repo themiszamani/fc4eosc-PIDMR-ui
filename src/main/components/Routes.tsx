@@ -15,6 +15,7 @@ import UserRoleGuide from "../../pages/user-role/UserRoleGuide";
 import UsersTable from "../../pages/user-role/UsersTable";
 import UserRoleRequests from "../../pages/user-role/UserRoleRequests";
 import SupportedPids from "../../pages/supported-pids/SupportedPids";
+import PidDetail from "../../pages/supported-pids/PidDetail";
 
 const Routes = () => {
   return (
@@ -29,7 +30,8 @@ const Routes = () => {
       <Route path={ROUTES.ABOUT.TERMS} element={<Terms />} />
       <Route path={ROUTES.ABOUT.DISCLAIMER} element={<Disclaimer />} />
       <Route path={ROUTES.ABOUT.COOKIES} element={<Cookies />} />
-      <Route path={ROUTES.SUPPORTED_PIDS} element={<SupportedPids />} />
+      <Route path={ROUTES.SUPPORTED_PIDS.ROOT} element={<SupportedPids />} />
+      <Route path={ROUTES.SUPPORTED_PIDS.PID_DETAIL} element={<PidDetail />} />
       <Route
         path={ROUTES.MANAGED_PIDS.ROOT}
         element={<ProtectedRoute routeRoles={["provider_admin", "admin"]} />}

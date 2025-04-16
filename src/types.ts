@@ -30,6 +30,7 @@ export type Provider = {
   status?: string;
   examples: string[];
   user_id: string | null;
+  validator: string | null;
 };
 
 export type ResolutionMode = {

@@ -121,14 +121,8 @@ footer a {
   color: #cacaca !important;
 }
 
-.result-card .example-text {
-  display: flex;
-  align-items: center;
-  font-size: 11px;
-  font-weight: 400;
-  line-height: 18px;
-  color: #6c757d;
-  word-break: break-word;
+.bg-info {
+  background-color: #35badb !important;
 }
 
 .result-card .result-header {
@@ -147,4 +141,111 @@ footer a {
 .result-card .result-actions-container {
   display: flex;
   gap: 8px;
+}
+
+.example-text {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 18px;
+  color: #6c757d;
+  word-break: break-word;
+}
+
+.actions-text {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: #6c757d;
+  word-break: break-word;
+}
+
+.providers-box-container {
+  position: relative;
+  margin: 0 0 30px 8px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  box-shadow: none;
+}
+
+.providers-box-container .header {
+  display: inline-block;
+  align-items: center;
+  padding: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.providers-box-container .headerblock {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+}
+
+.providers-box-container .headerblock .spacer {
+  margin-right: 12px;
+}
+
+.providers-box-container .headerblock .imgblock {
+  display: inline-block;
+}
+
+.providers-box-container .headerblock .imgblock img {
+  display: block;
+  overflow: clip;
+  background-color: #495057;
+  border: 1px solid #495057;
+  border-radius: 50%;
+}
+
+.providers-box-container .titlebox {
+  overflow: hidden;
+}
+
+.providers-box-container .titlebox span.title {
+  display: block;
+  width: 100%;
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 20px;
+  color: #202124;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.providers-box-container .descbox {
+  display: block;
+  flex: 0 0 auto;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.providers-box-container .descbox .description {
+  overflow: hidden;
+}
+
+.providers-box-container .typebox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.providers-box-container .typebox .desc {
+  width: 100%;
+  max-width: max-content;
+  padding-right: 38px;
+  overflow: hidden;
+  overflow-x: hidden;
+  font-size: 12px;
+  font-style: normal;
+  line-height: 16px;
+  color: #4d5156;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

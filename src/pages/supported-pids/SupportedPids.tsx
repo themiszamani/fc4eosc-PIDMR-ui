@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import { ApiResponse } from "../../types";
+import logoDOI from "@/assets/logoDOI.png";
 
 // API endpoint declared in env variable
 const PIDMR_API = import.meta.env.VITE_PIDMR_API;
@@ -74,7 +75,7 @@ function SupportedPids() {
       for (const actionItem of item.resolution_modes) {
         actions.push(
           <span
-            className="badge badge-small bg-secondary mx-1"
+            className="badge badge-small bg-info text-white mx-1"
             key={actionItem.mode}
           >
             {actionItem.name}
@@ -86,33 +87,65 @@ function SupportedPids() {
       // provider name and prefix in the card-header
       // provider description in the card-body
       // provider supported modes in the card-footer
+      //wHYlTd Ww4FFb vt6azd tF2Cxc asEBEc
+
       providers.push(
-        <li key={item.type} className="m-4">
-          <div className="card">
-            <div className="card-header">
-              <div className="d-flex justify-content-between">
-                <div>
-                  <span
-                    style={{ color: "black", border: "1px black solid" }}
-                    className="badge badge-small bg-warning"
-                  >
-                    {item.type}
+        <div className="mb-1">
+          <div className="providers-box-container">
+            <div>
+              <div className="header">
+                <div className="headerblock">
+                  <span className="spacer">
+                    <div className="imgblock" aria-hidden="true">
+                      <img
+                        className=""
+                        src={logoDOI}
+                        style={{
+                          width: "30px",
+                          height: "28px",
+                          marginTop: "10px",
+                        }}
+                        alt=""
+                      />
+                    </div>
                   </span>
-                  <strong style={{ marginLeft: "0.6rem" }}>{item.name}</strong>
+                  <div className="titlebox">
+                    <div>
+                      <span className="title">{item.name}</span>
+                    </div>
+                    <div className="typebox">
+                      <span className="desc"> type: {item.type} </span>
+                    </div>
+                  </div>
                 </div>
+              </div>
+              <span style={{ display: "none" }}></span>
+            </div>
+            <div className="descbox">
+              <div className="description">
+                <span>{item.description}</span>
               </div>
             </div>
-            <div className="card-body">{item.description}</div>
-            {actions.length > 0 && (
-              <div className="card-footer">
-                <div className="d-flex justify-content-end">
-                  <small className="text-secondary mx-2">modes:</small>
-                  {actions}
-                </div>
+            <div className="example-text">
+              <span>Example: </span>
+              {item.examples[0] && (
+                <span
+                  className={item.examples[0]}
+                  data-example={item.examples[0]}
+                >
+                  {item.examples[0]}
+                </span>
+              )}
+
+              <div className="actions-text">
+                <span className="mx-1">
+                  <strong className="text-dark">/</strong> Supported modes:
+                </span>
+                {actions}
               </div>
-            )}
+            </div>
           </div>
-        </li>,
+        </div>,
       );
     }
 
@@ -194,14 +227,20 @@ function SupportedPids() {
   }
 
   return (
-    <div className="my-5">
-      <div className="d-flex justify-content-between">
-        <div>
-          <h5>Supported Pids:</h5>
+    <div className="row mt-5 ">
+      <div className="col-md-9 ">
+        <div className="input-group">
+          <input
+            className="form-control form-control-lg border"
+            placeholder="Find the provider you want"
+            id="search-input"
+            type="search"
+          />
         </div>
       </div>
-      <ul className="list-unstyled">{providers}</ul>
-      <hr />
+
+      <div className="d-flex justify-content-between"></div>
+      <div className="mt-3 search-results">{providers}</div>
       {pageNav}
     </div>
   );

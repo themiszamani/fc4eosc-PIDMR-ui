@@ -8,7 +8,10 @@ const ROUTES = {
     DISCLAIMER: "/about/disclaimer",
     COOKIES: "/about/cookies",
   },
-  SUPPORTED_PIDS: "/supported-pids",
+  SUPPORTED_PIDS: {
+    ROOT: "/supported-pids",
+    PID_DETAIL: "/supported-pids/:id",
+  },
   MANAGED_PIDS: {
     ROOT: "/managed-pids",
     ADD: "/managed-pids/add",

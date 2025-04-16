@@ -249,3 +249,22 @@ footer a {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.pid-detail-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.pid-detail-container .back-button-text {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.pid-detail-container .content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

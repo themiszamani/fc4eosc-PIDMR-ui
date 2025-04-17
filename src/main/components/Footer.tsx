@@ -57,56 +57,78 @@ function Footer() {
                   </a>
                 </li>
               )}
-              <li><br/>
-              Version: <strong>{packageJson.version}</strong>
+              <li>
+                <br />
+                Version: <strong>{packageJson.version}</strong>
               </li>
             </ul>
           </Col>
           <Col sm>
-            <Row><Col>            
-            <a href="https://www.grnet.gr/en" target="_blank" rel="noreferrer">
-              <img className="pidmr-logo-xsm" src={logoGrnet} alt="GRNET" />
-            </a>
-            <a href="https://www.gwdg.de/" target="_blank" rel="noreferrer">
-              <img className="pidmr-logo-xsm" src={logoGwdg} alt="GWDG" />
-            </a>
-        
-            <a href="https://www.openaire.eu/" target="_blank" rel="noreferrer">
-              <img
-                className="pidmr-logo-xsm"
-                src={logoOpenaire}
-                alt="OPENAIRE"
-              />
-            </a>
-            </Col></Row>
-            <Row><Col>  
-            <a href="https://www.csc.fi/en" target="_blank" rel="noreferrer">
-              <img className="pidmr-logo-xsm" src={logoCSC} alt="CSC" />
-            </a>
-            
-            <a href="https://www.inria.fr/en" target="_blank" rel="noreferrer">
-              <img
-                className="pidmr-logo-xsm"
-                src={logoINRIA}
-                alt="Institut national de recherche en sciences et technologies du numérique"
-              />
-            </a>
-            <a
-              href="https://www.helsinki.fi/en"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img
-                className="pidmr-logo-xsm"
-                src={logoUNHEL}
-                alt="University of Helsinki"
-              />
-            </a>
-            </Col></Row>
-            <Row><Col>&nbsp;</Col></Row>
+            <Row>
+              <Col>
+                <a
+                  href="https://www.grnet.gr/en"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img className="pidmr-logo-xsm" src={logoGrnet} alt="GRNET" />
+                </a>
+                <a href="https://www.gwdg.de/" target="_blank" rel="noreferrer">
+                  <img className="pidmr-logo-xsm" src={logoGwdg} alt="GWDG" />
+                </a>
+
+                <a
+                  href="https://www.openaire.eu/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    className="pidmr-logo-xsm"
+                    src={logoOpenaire}
+                    alt="OPENAIRE"
+                  />
+                </a>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <a
+                  href="https://www.csc.fi/en"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img className="pidmr-logo-xsm" src={logoCSC} alt="CSC" />
+                </a>
+
+                <a
+                  href="https://www.inria.fr/en"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    className="pidmr-logo-xsm"
+                    src={logoINRIA}
+                    alt="Institut national de recherche en sciences et technologies du numérique"
+                  />
+                </a>
+                <a
+                  href="https://www.helsinki.fi/en"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    className="pidmr-logo-xsm"
+                    src={logoUNHEL}
+                    alt="University of Helsinki"
+                  />
+                </a>
+              </Col>
+            </Row>
+            <Row>
+              <Col>&nbsp;</Col>
+            </Row>
           </Col>
         </Row>
-     
       </Container>
     </footer>
   );

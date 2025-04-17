@@ -52,3 +52,18 @@ code {
   visibility: visible;
   opacity: 1;
 }
+
+.bg-grey-light {
+  background-color: #f8f9fe;
+}
+
+footer ul.legal {
+  list-style: none;
+  padding: 0;
+}
+
+footer ul.legal li {
+  display: inline;
+  margin-right: 10px; /* optional, adds some spacing between list items */
+}
+
